@@ -1,5 +1,7 @@
 package nl.han.weatherboys.storage.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 
 /**
@@ -22,7 +24,7 @@ public class Humidity {
      */
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
-    private Integer id;
+    public Integer id;
 
     /**
      * The station that measured this measurement
@@ -33,12 +35,11 @@ public class Humidity {
     /**
      * Timestamp of the measurement in unix timestamp seconds
      */
-    private long moment;
+    public long moment;
 
     /**
      * The percentage humidity measured ath the given moment
      */
-    private float humidity;
-
+    public float humidity;
 
 }

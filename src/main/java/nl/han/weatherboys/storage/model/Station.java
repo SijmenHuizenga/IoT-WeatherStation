@@ -14,18 +14,17 @@ public class Station {
      */
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
-    private Integer id;
+    public Integer id;
 
     /**
      * The human understandable name of this station
      */
-    private String name;
+    public String name;
 
     /**
      * All humidity measurements made by this station
      */
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "humidity")
-    private Set<Humidity> humidityMeasurements;
-
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "station")
+    public Set<Humidity> humidities;
 
 }
