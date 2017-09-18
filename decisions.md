@@ -14,3 +14,14 @@ All timestamps are handled in unix timestamp seconds. This is because dates and 
 ### Mysql
 For the datastore the gateway uses a mysql database. This is because this is one of the popular open source relational database implementations next to Postgre SQL and MariaDB. Because we use Spring with Hibernate ORM, changing the database type later would have no to little impact to the code base since this is supported out of the box. Therefore this decision does not need extensive research and Mysql is just chosen.
 
+### Many tables vs Single table
+There are two options for the storage of all measurements.
+
+The first simple way is to make a single table to store all measurements. This table would have the following colums:
+ * child id
+ * type  (humidity, temperature, brightness)
+ * value
+ * timestamp
+This way it is super simple to add new measurement types. This could even be done without changing code. The downside is that implementing custom business rules for specific measurement types much more difficult is.
+ 
+The second better option is to create a single table and entity for every type of measurement. The downside is that there will be a lot of small tables, but the upside is that it is much easier to have custom things like measurements with multiple values. 

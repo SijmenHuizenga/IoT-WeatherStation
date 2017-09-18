@@ -1,0 +1,20 @@
+package nl.han.weatherboys.dto;
+
+import org.springframework.http.ResponseEntity;
+
+public class ErrorResponse {
+
+    private String message;
+
+    public ErrorResponse(String message) {
+        this.message = message;
+    }
+
+    public static ErrorResponse error(String message){
+        return new ErrorResponse(message);
+    }
+
+    public static ResponseEntity<ErrorResponse> eberallert(){
+        return ResponseEntity.badRequest().body(new ErrorResponse("EMBER ALLERT! Child not found!"));
+    }
+}

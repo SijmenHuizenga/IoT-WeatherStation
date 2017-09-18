@@ -3,7 +3,7 @@ package nl.han.weatherboys.storage.model;
 import javax.persistence.*;
 
 @Entity
-public class Humidity {
+public class Brightness {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -14,15 +14,14 @@ public class Humidity {
 
     public long moment;
 
-    public float humidity;
+    public float brightness;
 
-    public Humidity(Child child, long moment, float humidity) {
+    public Brightness(Child child, long moment, float brightness) {
         this.child = child;
         this.moment = moment;
-        this.humidity = humidity;
+        this.brightness = brightness;
     }
 
-    public Humidity() {
+    public Brightness() {
     }
-
 }
