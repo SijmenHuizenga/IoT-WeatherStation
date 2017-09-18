@@ -13,23 +13,30 @@ void connectEthernet(void) {
   delay(1000);
   Serial.println("connecting...");
 
-  // if you get a connection, report back via serial:
   if (client.connect(server, 8080)) {
     Serial.println("connected");
     client.stop();
   } else {
     Serial.println("connection failed");
   }
-
 }
 
 void sendWeatherToGateway(void) {
   if (client.connect(server, 8080)) {
-    String body = "{\"stationid\":" + (String)getStationID(); +",";
-    body = body + "\"humidity\": " + (String)getHumidity() + "}";
+    String body = "{\"childid\":" + (String)getStationID() + ",";
+//    if (sendHumidity) {
+      body = body + "\"humidity\": " + (String)getHumidity() + "}";
+//    }
+//    if (sendTemperature) {
+//      body = body + "\"temperature\": " + (String)getTemperature() + "}";
+//    }
+//    if (sendBrightness) {
+//      body = body + "\"brightness\": " + (String)getBrightness() + "}";
+//    }
+
 
     sendHeader((String)body.length());
-    
+
     client.println((String)body);
     Serial.println((String)body);
   } else {
@@ -39,25 +46,19 @@ void sendWeatherToGateway(void) {
     char c = client.read();
     Serial.print(c);
   }
-
-  // if the server's disconnected, stop the client:
   if (!client.connected()) {
     Serial.println();
     Serial.println("disconnecting.");
     client.stop();
-
-
   }
 }
 
 void sendHeader(String bodyLength) {
-    client.println("PUT / HTTP/1.1");
-    client.println("Host: 192.168.178.55:8080");
-    client.println("Content-Type: application/json");
-    client.println("Content-Length: " +  bodyLength);
-    Serial.println("Content-Lenght: " +  bodyLength);
-
-    client.println("Connection: close");
-    client.println();
+  client.println("PUT / HTTP/1.1");
+  client.println("Host: 192.168.178.55:8080/child/1/measurements");
+  client.println("Content-Type: application/json");
+  client.println("Content-Length: " +  bodyLength);
+  client.println("Connection: close");
+  client.println();
 }
 
