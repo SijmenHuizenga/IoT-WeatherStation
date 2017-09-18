@@ -1,6 +1,6 @@
 #pragma once
 #include "Network.h"
-#include "Sensor.h"
+#include "Sensors.h"
 
 
 void setup() {
