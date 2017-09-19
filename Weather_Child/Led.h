@@ -1,18 +1,21 @@
 #pragma once
+#include <Arduino.h>
+
 #define REDLED 4
 #define YELLOWLED 3
 #define GREENLED 2
-#define LEDCOUNT 3
+
 
 class Led {
   private:
     float temperature;
     float treshGreen;
     float treshRed;
+    void setLedOnOrOff(byte lednr, bool ison);
   public:
     void setupLed();
     void setTreshRed(float temp);
     void setTreshGreen(float temp);
-    void loadTemp(float temp);
+    void setTemp(float temp);
     void updateLed();
 };

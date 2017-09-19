@@ -1,5 +1,6 @@
 #pragma once
 #include "Led.h"
+#include "Debug.h"
 #include "Sensors.h"
 
 void Led::setupLed() {
@@ -21,35 +22,33 @@ void Led::setTreshGreen(float temp) {
 }
 
 
-void Led::loadTemp(float temp) {
+void Led::setTemp(float temp) {
   this->temperature = temp;
 }
 
 
 void Led::updateLed() {
-  Led::loadTemp(getTemperature());
-  if (this->temperature < this->treshGreen) {
-    Serial.println("testtesttest1");
-    digitalWrite(GREENLED, HIGH);
-    digitalWrite(YELLOWLED, LOW);
-    digitalWrite(REDLED, LOW);
-  } else if (this->temperature >= this->treshGreen && this->temperature <= this->treshRed){
-    Serial.println("testtesttest2");
-    digitalWrite(GREENLED, LOW);
-    digitalWrite(YELLOWLED, HIGH);
-    digitalWrite(REDLED, LOW);
-  } else if (this->temperature > this->treshRed){
-    Serial.println("testtesttest3");
-    digitalWrite(GREENLED, LOW);
-    digitalWrite(YELLOWLED, LOW);
-    digitalWrite(REDLED, HIGH);
-  } else {
-    Serial.println("testtesttest");
-    digitalWrite(GREENLED, HIGH);
-    digitalWrite(YELLOWLED, HIGH);
-    digitalWrite(REDLED, HIGH);
+  setTemp(getTemperature());
+
+  byte ledOn = 0;
+  
+  if(this->temperature < this->treshGreen)
+    ledOn = GREENLED;
+  else if (this->temperature >= this->treshGreen && this->temperature <= this->treshRed)
+    ledOn = YELLOWLED;
+  else if (this->temperature > this->treshRed)
+    ledOn = REDLED;
+  else{
+    debug("TRESH GREEN SHOULD BE < THAN TRESH RED!!", LED);
+    return;
   }
 
-  
+  setLedOnOrOff(GREENLED, ledOn == GREENLED);
+  setLedOnOrOff(YELLOWLED, ledOn == YELLOWLED);
+  setLedOnOrOff(REDLED, ledOn == REDLED);
+}
+
+void Led::setLedOnOrOff(byte lednr, bool ison){
+  digitalWrite(lednr, ison ? HIGH : LOW);
 }
 

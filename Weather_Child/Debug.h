@@ -4,7 +4,7 @@
 #define DEBUGSENSOR
 #include <Arduino.h> 
 
-typedef enum DebugType {SENSOR, NETWORK} DebugType;
+typedef enum DebugType {SENSOR, NETWORK, LED} DebugType;
 
 void startDebugging();
 

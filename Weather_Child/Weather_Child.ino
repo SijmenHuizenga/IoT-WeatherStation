@@ -3,20 +3,37 @@
 #include "Sensors.h"
 #include "Debug.h"
 #include "Led.h"
+#include "Timer.h"
+
+TimedAction* sendWeatherDataTimer = new TimedAction();
+TimedAction* updateLedsTimer = new TimedAction();
+
+Led* led = new Led();
+
 
 void setup() {
-  Led led;
+  led->setTreshGreen(23.5);
+  led->setTreshRed(24.8);
+ 
   startDebugging();
   setupSensors();
   connectEthernet();
-  led.setupLed();
+  led->setupLed();
+
+  sendWeatherDataTimer->setDelay(5000);
+  sendWeatherDataTimer->setCallback(sendWeatherToGateway);
+
+  updateLedsTimer->setDelay(400);
+  updateLedsTimer->setCallback(updateLedCallback);
 }
 
 void loop() {
-  delay(5000);
-  sendWeatherToGateway();
-  Led led;
-  led.setTreshGreen(24.5);
-  led.setTreshRed(24.8);
-  led.updateLed();
+  sendWeatherDataTimer->update();
+  updateLedsTimer->update();
 }
+
+void updateLedCallback(){
+  led->updateLed();
+}
+
+
