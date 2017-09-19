@@ -1,10 +1,10 @@
 #pragma once
 #include "Network.h"
 #include "Sensors.h"
-
+#include "Debug.h"
 
 void setup() {
-  Serial.begin(9600);
+  startDebugging();
   setupSensors();
   connectEthernet();
 }
