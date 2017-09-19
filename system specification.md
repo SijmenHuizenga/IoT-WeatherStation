@@ -22,8 +22,4 @@ Light is measured using a light diode and is transmitted to the gateway in float
 #### Pressure
 Atmospheric Pressure will be measured with a device that is yet unknown.
 
-#### Angle
-The angle that the child is mounted measured using the gyro meter in the [MinIMU-9 v3](https://www.pololu.com/product/2468) component. The angle is represented with three float values (x, y and z) between 0 and 359,99.
-This measurement is usefull to detect when your weather station falls of your roof.
 
-![imu01c](https://dxydas.files.wordpress.com/2015/04/img_17301.jpg?w=128&h=128&crop=1)
