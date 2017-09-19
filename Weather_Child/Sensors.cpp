@@ -19,7 +19,7 @@ float getHumidity(void) {
 }
 
 float getTemperature(void) {
-  float data = sensor.getTemp();
+  float data = sensor.getTemp() + TEMPCALIBRATION;
   debugln((String)data, SENSOR);
   return data;
 }

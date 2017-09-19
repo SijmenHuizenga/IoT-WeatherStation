@@ -2,6 +2,7 @@
 #include "Debug.h"
 #include <Arduino.h> 
 
+
 void startDebugging() {
 //  #ifdef DEBUGSENSOR || DEBUGNETWORK
     Serial.begin(9600);

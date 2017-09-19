@@ -4,6 +4,7 @@
 //#include <Wire.h>
 
 #define DEBUGSENSORS
+#define TEMPCALIBRATION -1
 
 
 void setupSensors(void);
