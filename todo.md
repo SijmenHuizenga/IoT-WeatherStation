@@ -4,7 +4,7 @@ Week 2:
 - [x] De gateway gegevens opslaan in Database
 
 Week 3:
-- [ ] Probleem herhalende requets dat alleen de helft slaagt.
+- [x] Probleem herhalende requets dat alleen de helft slaagt.
 - [ ] Architectuurschets + globale projectdocumentatie: functionaliteit, wat doet die wanneer?
 - [ ] De gateway stuurt asyncrhoon de ontvangen gegevens naar de jorg api
 - [ ] Code refectoren als nodig
