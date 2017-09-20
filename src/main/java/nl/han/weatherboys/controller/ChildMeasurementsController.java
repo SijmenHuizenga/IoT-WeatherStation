@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.Instant;
 
+import static nl.han.weatherboys.controller.TimeController.now;
 import static nl.han.weatherboys.dto.ErrorResponse.eberallert;
 
 @RestController
@@ -38,7 +39,7 @@ public class ChildMeasurementsController {
         if(child == null)
             return eberallert();
 
-        long now = Instant.now().getEpochSecond();
+        long now = now();
 
         if(data.brightness != null)
             brightnessRepo.save(new Brightness(child, now, data.brightness));
