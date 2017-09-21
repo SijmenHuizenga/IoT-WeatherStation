@@ -7,7 +7,7 @@ Week 3:
 - [x] Probleem herhalende requets dat alleen de helft slaagt.
 - [ ] Architectuurschets + globale projectdocumentatie: functionaliteit, wat doet die wanneer?
 - [ ] De gateway stuurt asyncrhoon de ontvangen gegevens naar de jorg api
-- [ ] Code refectoren als nodig
+- [x] Code refectoren als nodig
 
 Week 4:
 - [ ] Testframeworks, eventueel automatisch, bedenkenen en opzeten
@@ -24,7 +24,3 @@ Week 6:
 - [ ] Gateway gegevens/grafiek opvragen
 - [ ] Temperatuurmeter eiken
 - [ ] Tijdsyncrhonisatie; Arduino vraagt aan gateway met een interval de huidge tijd op aan de gateway. De gateway vraagt dit weer op aan de jorgvisch-api.
-
-
-FLEXIBEL ID??
-ARDUINO OO?
