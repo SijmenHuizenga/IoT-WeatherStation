@@ -13,16 +13,18 @@ public class JorgApi {
     private final GetTokenService updateTokenService;
     private final PutDataService putDataService;
     private final GetTimeService getTimeService;
+    private final ResetTokenService resetTokenService;
 
     private JorgApiCredentialRepo credentialRepo;
     private JorgApiCredential credential;
 
     @Autowired
     public JorgApi(GetTokenService updateToken, PutDataService putDataService, GetTimeService getTimeService,
-                   JorgApiCredentialRepo credentialRepo) {
+                   ResetTokenService resetTokenService, JorgApiCredentialRepo credentialRepo) {
         this.updateTokenService = updateToken;
         this.putDataService = putDataService;
         this.getTimeService = getTimeService;
+        this.resetTokenService = resetTokenService;
         this.credentialRepo = credentialRepo;
     }
 
@@ -37,13 +39,13 @@ public class JorgApi {
     /**
      * Get the server time of the jorg server in unix seconds or null if it could not be loaded.
      */
-    public Long getTime(){
+    public Long getTime() throws IOException {
         return doRequestWithToken(
                 () -> getTimeService.getTime(credential.baseurl, credential.token)
         );
     }
 
-    public void putData(String weatherstation, long timestamp, float temperature, float illuminance){
+    public void putData(String weatherstation, long timestamp, float temperature, float illuminance) throws IOException {
         doRequestWithToken(() -> {
             putDataService.postData(
                     credential.baseurl, credential.token, weatherstation, timestamp, temperature, illuminance
@@ -52,26 +54,22 @@ public class JorgApi {
         });
     }
 
-    protected <R> R doRequestWithToken(TokenRequestAction<R> runnable){
+    protected <R> R doRequestWithToken(TokenRequestAction<R> runnable) throws IOException {
         initCredentials();
         if(shouldRefreshToken(this.credential))
-            try {
-                updateToken();
-            } catch (IOException e) {
-                e.printStackTrace();
-                return null;
-            }
+            updateToken();
+
         try {
             return runnable.doRequest();
         } catch (IOException e) {
             try {
+                resetTokenService.resetToken(credential.username, credential.password, credential.baseurl);
                 updateToken();
                 return runnable.doRequest();
             } catch (IOException e1) {
-                e1.printStackTrace();
+               throw new IOException("First try failed with error message " + e.getMessage() + ". Second try failed with the following error", e1);
             }
         }
-        return null;
     }
 
     @FunctionalInterface

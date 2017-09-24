@@ -1,5 +1,7 @@
 package nl.han.weatherboys.storage.model;
 
+import org.hibernate.validator.constraints.Length;
+
 import javax.persistence.*;
 import javax.validation.constraints.Size;
 import java.util.Set;
@@ -11,6 +13,7 @@ public class Child {
     @GeneratedValue(strategy = GenerationType.AUTO)
     public Integer id;
 
+    @Length(min=3, max=5)
     public String name;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "child")

@@ -10,8 +10,8 @@ public class ErrorResponse {
         this.message = message;
     }
 
-    public static ErrorResponse error(String message){
-        return new ErrorResponse(message);
+    public static ResponseEntity<ErrorResponse> error(String message){
+        return ResponseEntity.badRequest().body(new ErrorResponse(message));
     }
 
     public static ResponseEntity<ErrorResponse> emberallert(){
