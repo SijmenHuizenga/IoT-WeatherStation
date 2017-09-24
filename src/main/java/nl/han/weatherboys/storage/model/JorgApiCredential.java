@@ -1,11 +1,15 @@
 package nl.han.weatherboys.storage.model;
 
 import javax.persistence.Column;
+import javax.persistence.Entity;
 import javax.persistence.Id;
 
+@Entity
 public class JorgApiCredential {
 
     @Id
+    public int id;
+
     @Column(nullable = false)
     public String username;
 
@@ -15,6 +19,7 @@ public class JorgApiCredential {
     @Column(nullable = false)
     public String baseurl;
 
+    @Column(length = 800)
     public String token;
 
     public Long tokenExpires;
@@ -22,7 +27,8 @@ public class JorgApiCredential {
     public JorgApiCredential() {
     }
 
-    public JorgApiCredential(String username, String password, String baseurl, String token, Long tokenExpires) {
+    public JorgApiCredential(int id, String username, String password, String baseurl, String token, Long tokenExpires) {
+        this.id = id;
         this.username = username;
         this.password = password;
         this.baseurl = baseurl;
@@ -30,8 +36,8 @@ public class JorgApiCredential {
         this.tokenExpires = tokenExpires;
     }
 
-    public JorgApiCredential(String username, String password, String baseurl) {
-        this(username, password, baseurl, null, null);
+    public JorgApiCredential(int id, String username, String password, String baseurl) {
+        this(id, username, password, baseurl, null, null);
     }
 
     @Override

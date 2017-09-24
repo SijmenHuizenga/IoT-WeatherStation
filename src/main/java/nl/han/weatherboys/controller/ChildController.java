@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import static nl.han.weatherboys.dto.ErrorResponse.eberallert;
+import static nl.han.weatherboys.dto.ErrorResponse.emberallert;
 
 @RestController
 public class ChildController {
@@ -28,7 +28,7 @@ public class ChildController {
     public ResponseEntity getAllChildren(@PathVariable("id") String id) {
         Child child = childRepo.findOne(Integer.parseInt(id));
         if(child == null)
-            return eberallert();
+            return emberallert();
 
         return ResponseEntity.ok().body(child);
     }

@@ -4,7 +4,7 @@ import org.springframework.http.ResponseEntity;
 
 public class ErrorResponse {
 
-    private String message;
+    public String message;
 
     public ErrorResponse(String message) {
         this.message = message;
@@ -14,7 +14,7 @@ public class ErrorResponse {
         return new ErrorResponse(message);
     }
 
-    public static ResponseEntity<ErrorResponse> eberallert(){
+    public static ResponseEntity<ErrorResponse> emberallert(){
         return ResponseEntity.badRequest().body(new ErrorResponse("EMBER ALLERT! Child not found!"));
     }
 }
