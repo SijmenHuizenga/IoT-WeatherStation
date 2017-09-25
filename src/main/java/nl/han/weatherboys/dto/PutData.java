@@ -13,4 +13,12 @@ public class PutData {
         this.temperature = temperature;
         this.pressure = pressure;
     }
+
+    @Override
+    public String toString() {
+        return "{ hum:" + humidity +
+                ", bri:" + brightness +
+                ", tem:" + temperature +
+                ", pre:" + pressure + "}";
+    }
 }

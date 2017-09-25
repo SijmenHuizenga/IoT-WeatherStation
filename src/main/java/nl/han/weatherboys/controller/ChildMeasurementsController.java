@@ -67,12 +67,20 @@ public class ChildMeasurementsController {
         if(data.temperature != null)
             temperatureRepo.save(new Temperature(child, now, data.temperature));
 
-        if(data.temperature != null && data.brightness != null)
-            try {
-                jorgService.putData(child.name, now, data.temperature, data.brightness);
-            } catch (IOException e) {
-                LOGGER.error("Could not put data forward to JorgApi", e);
-            }
+        LOGGER.info("Received data from child and stored data in db: " + data);
+
+        if(data.temperature != null && data.brightness != null){
+            long finalNow = now;
+            new Thread(() -> {
+                try {
+                    jorgService.putData(child.name, finalNow, data.temperature, data.brightness);
+                    LOGGER.info("Forwarded data from child to jorgapi: {" + child.name +", "+ finalNow +", "+
+                            data.temperature +", "+ data.brightness + "}");
+                } catch (IOException e) {
+                    LOGGER.error("Could not put data forward to JorgApi", e);
+                }
+            }).run();
+        }
 
         return ResponseEntity.ok().body("ok");
     }
