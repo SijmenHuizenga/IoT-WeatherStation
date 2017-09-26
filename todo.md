@@ -16,11 +16,14 @@ Week 4:
 - [ ] Nieuwe weerstation's automatisch een nieuw id krijgen van gateway en id opslaan op de arduino. Wanneer de arduino opnieuw opstart dat hij niet meer vraagt om id en het id laad en daarmee data gaat verzenden.
 
 Week 5:
-- [ ] Arduino gebruiken als http server
+- [ ] Arduino gebruiken als http server om settings te ontvangen.
 - [ ] Temperatuurgrenzen configurabel maken via gateway. Vanaf gateway requestje naar arduino en daar dingen opslaan.
-- [ ] Pi deployment met docker?
+- [ ] Gateway deployment op Pi met docker
 
 Week 6:
 - [ ] Gateway gegevens/grafiek opvragen
 - [ ] Temperatuurmeter eiken
-- [ ] Tijdsyncrhonisatie; Arduino vraagt aan gateway met een interval de huidge tijd op aan de gateway. De gateway vraagt dit weer op aan de jorgvisch-api.
+- [ ] Tijdsyncrhonisatie; Arduino vraagt aan gateway de huidge tijd op bij startup. De gateway vraagt dit weer op aan de jorgvisch-api. De arduino houdt dan lokaal de tijd bij om de tijd te gebruiken bij verzenden. Dus ook extra veld meesturen naar gateway met timestamp.
+
+
+* Knopje toevoegen voor ID resetten
