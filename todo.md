@@ -29,4 +29,4 @@ Week 6:
 * Knopje toevoegen voor ID resetten
 * DNS Server
 * Data opnieuw versturen naar Jorg als dat niet lukt
-* 
+* Authenticatie tussen Child en Gateway
