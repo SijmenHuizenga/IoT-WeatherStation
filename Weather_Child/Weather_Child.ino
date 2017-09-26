@@ -30,6 +30,8 @@ void setup() {
 void loop() {
   sendWeatherDataTimer->update();
   updateLedsTimer->update();
+
+  updateNetServer();
 }
 
 void updateLedCallback(){

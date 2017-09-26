@@ -8,6 +8,8 @@ IPAddress server(192, 168, 178, 55); // Gateway IP
 IPAddress ip(192, 168, 178, 200);
 EthernetClient client;
 
+NetServerStatus serverstate;
+
 void connectEthernet(void) {
   Ethernet.begin(mac, ip);
 
@@ -23,35 +25,54 @@ void connectEthernet(void) {
 }
 
 void sendWeatherToGateway(void) {
+  if(serverstate != NET_WAITING && serverstate != NET_CONNETING)
+    return;
+  serverstate = NET_CONNETING;
   if (client.connect(server, 8080)) {
-    String body = "{";
-#ifdef SENDHUMID
-   body = body + "\"humidity\": " + (String)getHumidity();
-#endif
-#ifdef SENDTEMP
-   body = body + ",\"temperature\": " + (String)getTemperature();
-#endif 
-#ifdef SENDBRIGHTNESS
-   body = body + ",\"brightness\": " + (String)getBrightness();
-#endif
-      body = body + "}";
-
-    sendHeader((String)body.length());
-
-    client.println((String)body);
-    debugln((String)body, NETWORK);
+    sendWeather();
   } else {
     debugln("connection failed", NETWORK);
+    serverstate = NET_CONNETING;
   }
-  while (client.available()) {
-    char c = client.read();
-    debug((String)c, NETWORK);
+  serverstate = NET_RECEIVING;
+}
+
+void updateNetServer() {
+  if(serverstate == NET_RECEIVING){
+      bool readSomething = false;
+      while (client.available()) {
+        char c = client.read();
+        debug((String)c, NETWORK);
+        readSomething = true;
+      }
+      if(readSomething)
+        debug("\n", NETWORK);
+      if (!client.connected()) {
+        debugln("disconnecting.", NETWORK);
+        client.stop();
+        serverstate = NET_WAITING;
+      }
   }
-  if (!client.connected()) {
-    debugln("",NETWORK);
-    debugln("disconnecting.", NETWORK);
-    client.stop();
-  }
+  
+}
+
+void sendWeather(){
+  String body = "{";
+  #ifdef SENDHUMID
+     body = body + "\"humidity\": " + (String)getHumidity();
+  #endif
+  #ifdef SENDTEMP
+     body = body + ",\"temperature\": " + (String)getTemperature();
+  #endif 
+  #ifdef SENDBRIGHTNESS
+     body = body + ",\"brightness\": " + (String)getBrightness();
+  #endif
+    body = body + "}";
+
+  sendHeader((String)body.length()); //todo: static body length?
+
+  client.println((String)body);
+  debugln("Sent body: " + (String)body, NETWORK);
 }
 
 void sendHeader(String bodyLength) {
