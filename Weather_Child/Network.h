@@ -1,15 +1,9 @@
 #pragma once
 #include <Ethernet2.h>
 
-#define SENDTEMP
-#define SENDHUMID
-#define SENDBRIGHTNESS
-
-enum NetServerStatus { NET_CONNETING, NET_RECEIVING, NET_WAITING } ;
+extern byte myMac[];
+extern IPAddress gatewayIp;
 
 void connectEthernet(void);
-void updateHttpClient();
-void sendWeatherToGateway(void);
-void sendWeather();
-void sendHeader(String headerLength);
+
 

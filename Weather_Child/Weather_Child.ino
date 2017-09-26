@@ -4,6 +4,7 @@
 #include "Debug.h"
 #include "Led.h"
 #include "Timer.h"
+#include "HttpClient.h"
 
 TimedAction* sendWeatherDataTimer = new TimedAction();
 TimedAction* updateLedsTimer = new TimedAction();
