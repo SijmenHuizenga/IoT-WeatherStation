@@ -7,6 +7,7 @@
 
 TimedAction* sendWeatherDataTimer = new TimedAction();
 TimedAction* updateLedsTimer = new TimedAction();
+TimedAction* updateHttpClientTimer = new TimedAction();
 
 Led* led = new Led();
 
@@ -23,6 +24,9 @@ void setup() {
   sendWeatherDataTimer->setDelay(5000);
   sendWeatherDataTimer->setCallback(sendWeatherToGateway);
 
+  updateHttpClientTimer->setDelay(250);
+  updateHttpClientTimer->setCallback(updateHttpClient);
+
   updateLedsTimer->setDelay(400);
   updateLedsTimer->setCallback(updateLedCallback);
 }
@@ -30,8 +34,7 @@ void setup() {
 void loop() {
   sendWeatherDataTimer->update();
   updateLedsTimer->update();
-
-  updateNetServer();
+  updateHttpClientTimer->update();
 }
 
 void updateLedCallback(){

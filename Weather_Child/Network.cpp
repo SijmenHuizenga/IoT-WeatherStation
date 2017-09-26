@@ -25,21 +25,14 @@ void connectEthernet(void) {
 }
 
 void sendWeatherToGateway(void) {
-  if(serverstate != NET_WAITING && serverstate != NET_CONNETING)
-    return;
-  serverstate = NET_CONNETING;
-  if (client.connect(server, 8080)) {
-    sendWeather();
-  } else {
-    debugln("connection failed", NETWORK);
-    serverstate = NET_CONNETING;
-  }
-  serverstate = NET_RECEIVING;
+  if(serverstate == NET_WAITING)
+      serverstate = NET_CONNETING;
 }
 
-void updateNetServer() {
+void updateHttpClient() {
   if(serverstate == NET_RECEIVING){
       bool readSomething = false;
+      Serial.println("listening");
       while (client.available()) {
         char c = client.read();
         debug((String)c, NETWORK);
@@ -52,8 +45,13 @@ void updateNetServer() {
         client.stop();
         serverstate = NET_WAITING;
       }
+  } else if(serverstate == NET_CONNETING){
+      if (client.connect(server, 8080)) {
+        sendWeather();
+        serverstate = NET_RECEIVING;
+      } else 
+        debugln("connection failed", NETWORK);
   }
-  
 }
 
 void sendWeather(){
