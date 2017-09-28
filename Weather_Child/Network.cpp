@@ -8,7 +8,7 @@ IPAddress gatewayIp(192, 168, 178, 55);
 
 void connectEthernet(void) {
   while(1) {
-    if(Ethernet.begin(myMac)) 
+    if(Ethernet.begin()) 
       break;
     debugln("Starting ethernet failed. Retrying...", NETWORK);
     delay(1000);
