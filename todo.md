@@ -12,7 +12,7 @@ Week 3:
 
 Week 4:
 - [ ] Testframeworks, eventueel automatisch, bedenkenen en opzeten
-- [ ] DHCP implementeren op arduino en pi en documenteren handleiding
+- [x] DHCP implementeren op arduino en pi en documenteren handleiding
 - [ ] Nieuwe weerstation's automatisch een nieuw id krijgen van gateway en id opslaan op de arduino. Wanneer de arduino opnieuw opstart dat hij niet meer vraagt om id en het id laad en daarmee data gaat verzenden.
 
 Week 5:
