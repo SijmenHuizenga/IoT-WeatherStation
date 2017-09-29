@@ -16,6 +16,8 @@ public class Child {
     @Length(min=3, max=5)
     public String name;
 
+    public String ip;
+
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "child")
     public Set<Brightness> brightnesses;
 
