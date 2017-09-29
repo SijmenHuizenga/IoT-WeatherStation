@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 
 @Service
-public class GetTokenService extends JorgApiRequest {
+class GetTokenService extends JorgApiRequest {
 
     private static final String URL = "/token";
 

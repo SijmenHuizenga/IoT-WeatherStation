@@ -8,7 +8,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
-public abstract class JorgApiRequest {
+abstract class JorgApiRequest {
 
     private static final SimpleDateFormat TIMESTAMP_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.X");
     private static final SimpleDateFormat TIMESTAMP_FORMAT_OUT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.0000000X");
@@ -23,9 +23,8 @@ public abstract class JorgApiRequest {
                 String error = statuscode + ":";
                 if(body.has("error"))
                     error += " " + body.getString("error");
-                else if(body.has(""))
+                if(body.has("error_description"))
                     error += " " + body.getString("error_description");
-                System.out.println(body);
                 throw new IOException(error);
             }
         } catch (JSONException e) {
@@ -43,7 +42,7 @@ public abstract class JorgApiRequest {
             //substring to remove the 7 digit fractal seconds and add back the last timezone char
             c.setTime(TIMESTAMP_FORMAT.parse(txt.substring(0, 20)+txt.charAt(27)));
             return c.getTimeInMillis()/1000L;
-        } catch (ParseException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             return null;
         }

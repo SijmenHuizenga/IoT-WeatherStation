@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 
 @Service
-public class PutDataService extends JorgApiRequest {
+class PutDataService extends JorgApiRequest {
 
     private static final String URL = "/api/Weather";
 

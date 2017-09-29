@@ -1,34 +1,46 @@
 package nl.han.weatherboys.controller;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import nl.han.weatherboys.dto.ChildLoginResponse;
-import nl.han.weatherboys.dto.IpBody;
-import nl.han.weatherboys.jorgapi.JorgApi;
+import nl.han.weatherboys.dto.ErrorResponse;
 import nl.han.weatherboys.storage.model.Child;
 import nl.han.weatherboys.storage.repo.ChildRepo;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import java.io.IOException;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
 import static nl.han.weatherboys.dto.ErrorResponse.emberallert;
-import static nl.han.weatherboys.dto.ErrorResponse.error;
 
 @RestController
+@Api(tags = "Children")
 public class ChildController {
 
     private final ChildRepo childRepo;
-    private final JorgApi jorgApi;
 
-    public ChildController(ChildRepo childRepo, JorgApi jorgApi) {
+    public ChildController(ChildRepo childRepo) {
         this.childRepo = childRepo;
-        this.jorgApi = jorgApi;
     }
 
+    @ApiOperation(value = "All children data", notes = "Get all data from all children data available in the gateway " +
+            "including all meaurement data.")
+    @ApiResponses({
+            @ApiResponse(code=200, message = "OK", response = Child.class, responseContainer = "array"),
+    })
     @RequestMapping(method = RequestMethod.GET, value = "/child/")
     public ResponseEntity<Iterable<Child>> getAllChildren() {
         return ResponseEntity.ok().body(childRepo.findAll());
     }
 
+    @ApiOperation(value = "single child data", notes = "Get the data from one child in the gateway by it's id including" +
+            " all measurement data.")
+    @ApiResponses({
+            @ApiResponse(code=200, message = "OK", response = Child.class, responseContainer = "array"),
+    })
     @RequestMapping(method = RequestMethod.GET, value = "/child/{id}")
     public ResponseEntity getAllChildren(@PathVariable("id") String id) {
         Child child = childRepo.findOne(Integer.parseInt(id));
@@ -36,53 +48,6 @@ public class ChildController {
             return emberallert();
 
         return ResponseEntity.ok().body(child);
-    }
-
-    @RequestMapping(method = RequestMethod.POST, value = "/child/{id}/login")
-    public ResponseEntity signInExistingChild(@PathVariable("id") String id, @RequestBody IpBody ip) {
-        Child child = childRepo.findOne(Integer.parseInt(id));
-        if(child == null)
-            return emberallert();
-
-        if(ip == null || ip.ip == null || ip.ip.isEmpty())
-            return error("Body in the wrong format");
-
-        child.ip = ip.ip;
-
-        long time;
-        try {
-             time = jorgApi.getTime();
-        } catch (IOException e) {
-            e.printStackTrace();
-            return error("Could not retrieve time");
-        }
-
-        return ResponseEntity.ok().body(
-                new ChildLoginResponse(child.id, time)
-        );
-    }
-
-    @RequestMapping(method = RequestMethod.POST, value = "/child/login")
-    public ResponseEntity signInNewChild(@RequestBody IpBody ip) {
-        if(ip == null || ip.ip == null || ip.ip.isEmpty())
-            return error("Body in the wrong format");
-
-        Child child = new Child("TMP");
-        child.ip = ip.ip;
-
-        childRepo.save(child);
-
-        long time;
-        try {
-            time = jorgApi.getTime();
-        } catch (IOException e) {
-            e.printStackTrace();
-            return error("Could not retrieve time");
-        }
-
-        return ResponseEntity.ok().body(
-                new ChildLoginResponse(child.id, time)
-        );
     }
 
 }

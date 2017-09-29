@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import nl.han.weatherboys.Applications;
 import nl.han.weatherboys.JpaConfig;
 import nl.han.weatherboys.dto.PutData;
-import nl.han.weatherboys.jorgapi.ResetTokenService;
+import nl.han.weatherboys.storage.model.Brightness;
 import nl.han.weatherboys.storage.model.Child;
 import nl.han.weatherboys.storage.model.JorgApiCredential;
 import nl.han.weatherboys.storage.repo.ChildRepo;
@@ -26,6 +26,8 @@ import org.springframework.web.context.WebApplicationContext;
 
 import javax.annotation.Resource;
 
+import static nl.han.weatherboys.TestGlobals.*;
+import static org.junit.Assert.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
@@ -37,10 +39,6 @@ import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppC
         classes = { JpaConfig.class },
         loader = AnnotationConfigWebContextLoader.class)
 public class ChildMeasurementsControllerTest {
-
-    private static final String USER = "autotest@example.com", PASS = "123abC*", URL = "http://iot.jorgvisch.nl";
-
-    private Logger LOGGER = Logger.getLogger(this.getClass());
 
     private MockMvc mockMvc;
     private ObjectMapper mapper = new ObjectMapper();
@@ -54,14 +52,10 @@ public class ChildMeasurementsControllerTest {
     @Autowired
     private WebApplicationContext webApplicationContext;
 
-    @Autowired
-    private ResetTokenService resetTokenService;
-
     @Before
     public void setup() throws Exception {
         this.mockMvc = webAppContextSetup(webApplicationContext).build();
-        credentialRepo.save(new JorgApiCredential(1, USER, PASS, URL));
-        resetTokenService.resetToken(USER, PASS, URL);
+        credentialRepo.save(new JorgApiCredential(1, JORGUSER, JORGPASS, JORGURL));
     }
 
     @Test
@@ -72,7 +66,6 @@ public class ChildMeasurementsControllerTest {
         mockMvc.perform(put("/child/"+child.id+"/measurements/")
                 .content(mapper.writeValueAsString(new PutData(50f, 30f, 23f, 20f)))
                 .contentType(MediaType.APPLICATION_JSON))
-                .andDo(mvcResult -> LOGGER.trace("Response body: " + mvcResult.getResponse().getContentAsString()))
                 .andExpect(status().isOk());
     }
 

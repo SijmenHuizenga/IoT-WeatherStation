@@ -1,12 +1,13 @@
 package nl.han.weatherboys.jorgapi;
 
+import org.json.JSONObject;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import static org.junit.Assert.*;
+import java.io.IOException;
 
 @RunWith(SpringRunner.class)
 public class JorgApiRequestTest {
@@ -24,8 +25,34 @@ public class JorgApiRequestTest {
     }
 
     @Test
+    public void makeTimestampWrong() throws Exception {
+        Assert.assertNull(my.makeTimestamp("wrongformat"));
+    }
+
+    @Test
+    public void makeDateTimeWrong() throws Exception {
+        Assert.assertNull(my.makeDateTime("wrongformat"));
+    }
+
+    @Test
     public void makeStringStamp() throws Exception {
         Assert.assertEquals("2017-09-19T11:29:44.0000000+02", my.makeStringStamp(1505813384L));
     }
+
+    @Test
+    public void handleErrorResponseOk() throws Exception {
+        my.handleErrorResponse(200, new JSONObject("{}"));
+    }
+
+    @Test(expected = IOException.class)
+    public void handleErrorResponseNormalError() throws Exception {
+        my.handleErrorResponse(400, new JSONObject("{\"error\": \"Test Error\", \"error_description\": \"adsf\"}"));
+    }
+
+    @Test(expected = IOException.class)
+    public void handleErrorResponseError() throws Exception {
+        my.handleErrorResponse(400, new JSONObject("{\"error\": \"Test Error\", \"error_description\": null}"));
+    }
+
 
 }

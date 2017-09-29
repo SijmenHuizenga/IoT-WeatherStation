@@ -10,9 +10,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @Service
-public class ResetTokenService {
+class ResetTokenService {
 
-    public void resetToken(String username, String password, String url) throws IOException{
+    public void resetToken(String username, String password, String url) throws IOException {
         try {
             String requestToken = getLoginPage(url);
             postLogin(url, username, password, requestToken);

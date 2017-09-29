@@ -54,7 +54,7 @@ public class JorgApi {
         });
     }
 
-    protected <R> R doRequestWithToken(TokenRequestAction<R> runnable) throws IOException {
+    private <R> R doRequestWithToken(TokenRequestAction<R> runnable) throws IOException {
         initCredentials();
         if(shouldRefreshToken(this.credential))
             updateToken();

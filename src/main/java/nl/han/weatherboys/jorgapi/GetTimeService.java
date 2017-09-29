@@ -3,7 +3,6 @@ package nl.han.weatherboys.jorgapi;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
-import nl.han.weatherboys.storage.model.JorgApiCredential;
 import org.hamcrest.text.MatchesPattern;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -12,10 +11,8 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.util.regex.Pattern;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-
 @Service
-public class GetTimeService extends JorgApiRequest {
+class GetTimeService extends JorgApiRequest {
 
     private static final String URL = "/api/time";
 

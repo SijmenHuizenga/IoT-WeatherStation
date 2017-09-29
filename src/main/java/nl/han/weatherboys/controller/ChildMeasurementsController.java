@@ -1,5 +1,8 @@
 package nl.han.weatherboys.controller;
 
+import io.swagger.annotations.*;
+import nl.han.weatherboys.dto.ErrorResponse;
+import nl.han.weatherboys.dto.OkResponse;
 import nl.han.weatherboys.dto.PutData;
 import nl.han.weatherboys.jorgapi.JorgApi;
 import nl.han.weatherboys.storage.model.*;
@@ -14,6 +17,7 @@ import java.io.IOException;
 import static nl.han.weatherboys.dto.ErrorResponse.emberallert;
 
 @RestController
+@Api(tags = "Children")
 public class ChildMeasurementsController {
 
     private final Logger LOGGER = Logger.getLogger(this.getClass());
@@ -38,10 +42,16 @@ public class ChildMeasurementsController {
         this.jorgService = jorgService;
     }
 
-    /**
-     * @param childid Weather Child Station ID
-     * @param data Measurement Data
-     */
+    @ApiOperation(value = "Register measurements from child",
+            notes = "This call is used by weather children to register new weather information. This information is stored " +
+                    "in the gateway database and is accessable through the GET /child/ endpoints. All measurement fields are optional. " +
+                    "If a field is not specified than the gateway assumes that this child has no sensor for that measurement type. " +
+                    "If the temperature field and brightness field are available than the data is asynchroniously forwared " +
+                    "to the Jorg Api.")
+    @ApiResponses({
+            @ApiResponse(code=200, message = "OK", response = OkResponse.class),
+            @ApiResponse(code=400, message = "Bad Request", response = ErrorResponse.class),
+    })
     @RequestMapping(method = RequestMethod.PUT, value = "/child/{childid}/measurements", name = "Register measurements from child")
     public ResponseEntity registerMeasurement(
             @PathVariable(value="childid") Integer childid,
@@ -82,7 +92,7 @@ public class ChildMeasurementsController {
             }).run();
         }
 
-        return ResponseEntity.ok().body("ok");
+        return ResponseEntity.ok().body(new OkResponse());
     }
 
 }

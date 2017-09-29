@@ -1,5 +1,7 @@
 package nl.han.weatherboys.storage.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -11,15 +13,18 @@ public class JorgApiCredential {
     public int id;
 
     @Column(nullable = false)
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     public String username;
 
     @Column(nullable = false)
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     public String password;
 
     @Column(nullable = false)
     public String baseurl;
 
     @Column(length = 800)
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     public String token;
 
     public Long tokenExpires;
