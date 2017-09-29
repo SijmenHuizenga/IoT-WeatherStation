@@ -29,9 +29,9 @@ public class ChildController {
     @ApiOperation(value = "All children data", notes = "Get all data from all children data available in the gateway " +
             "including all meaurement data.")
     @ApiResponses({
-            @ApiResponse(code=200, message = "OK", response = Child.class, responseContainer = "array"),
+            @ApiResponse(code=200, message = "OK", response = Child.class, responseContainer = "List"),
     })
-    @RequestMapping(method = RequestMethod.GET, value = "/child/")
+    @RequestMapping(method = RequestMethod.GET, value = "/child")
     public ResponseEntity<Iterable<Child>> getAllChildren() {
         return ResponseEntity.ok().body(childRepo.findAll());
     }
@@ -39,7 +39,7 @@ public class ChildController {
     @ApiOperation(value = "single child data", notes = "Get the data from one child in the gateway by it's id including" +
             " all measurement data.")
     @ApiResponses({
-            @ApiResponse(code=200, message = "OK", response = Child.class, responseContainer = "array"),
+            @ApiResponse(code=200, message = "OK", response = Child.class),
     })
     @RequestMapping(method = RequestMethod.GET, value = "/child/{id}")
     public ResponseEntity getAllChildren(@PathVariable("id") String id) {

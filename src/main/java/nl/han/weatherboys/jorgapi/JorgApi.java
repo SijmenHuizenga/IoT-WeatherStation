@@ -56,14 +56,20 @@ public class JorgApi {
 
     private <R> R doRequestWithToken(TokenRequestAction<R> runnable) throws IOException {
         initCredentials();
-        if(shouldRefreshToken(this.credential))
-            updateToken();
+        if(shouldRefreshToken(this.credential)) {
+            try{
+                updateToken();
+            }catch (IOException e){
+                if(e.getMessage().contains("tokenrequest_overload"))
+                    resetToken();
+            }
+        }
 
         try {
             return runnable.doRequest();
         } catch (IOException e) {
             try {
-                resetTokenService.resetToken(credential.username, credential.password, credential.baseurl);
+                resetToken();
                 updateToken();
                 return runnable.doRequest();
             } catch (IOException e1) {
@@ -83,6 +89,10 @@ public class JorgApi {
         credential.token = token.token;
         credential.tokenExpires = token.tokenExpires;
         credentialRepo.save(credential);
+    }
+
+    private void resetToken() throws IOException {
+        resetTokenService.resetToken(credential.username, credential.password, credential.baseurl);
     }
 
     private boolean shouldRefreshToken(JorgApiCredential credential){

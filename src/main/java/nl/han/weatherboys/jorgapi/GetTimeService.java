@@ -42,7 +42,7 @@ class GetTimeService extends JorgApiRequest {
 
     public long parseResponse(String textBody) throws IOException {
         if(!new MatchesPattern(Pattern.compile("\"\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}.\\d{7}Z\"")).matches(textBody))
-            throw new IOException("Wrong string format");
+            throw new IOException("Wrong string format. Input string was: " + textBody);
 
         return makeTimestamp(textBody.substring(1, textBody.length()-1));
     }

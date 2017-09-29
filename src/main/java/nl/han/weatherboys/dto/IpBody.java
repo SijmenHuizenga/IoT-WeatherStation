@@ -8,4 +8,10 @@ public class IpBody {
             required = true, example = "192.168.178.6", dataType = "string")
     public String ip;
 
+    public IpBody(String ip) {
+        this.ip = ip;
+    }
+
+    public IpBody() {
+    }
 }

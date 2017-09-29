@@ -71,6 +71,12 @@
 			<artifactId>springfox-swagger-ui</artifactId>
 			<version>2.7.0</version>
 		</dependency>
+		<dependency>
+			<groupId>info.solidsoft.mockito</groupId>
+			<artifactId>mockito-java8</artifactId>
+			<version>2.1.0</version>
+			<scope>test</scope>
+		</dependency>
 
     </dependencies>
 
