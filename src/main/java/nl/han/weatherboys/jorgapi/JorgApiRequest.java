@@ -20,12 +20,16 @@ abstract class JorgApiRequest {
     void handleErrorResponse(int statuscode, JSONObject body) throws IOException {
         try {
             if(statuscode != 200) {
-                String error = statuscode + ":";
+                String error = "";
                 if(body.has("error"))
                     error += " " + body.getString("error");
                 if(body.has("error_description"))
                     error += " " + body.getString("error_description");
-                throw new IOException(error);
+                if(body.has("Message"))
+                    error += " " + body.getString("error_description");
+                if(error.equals(""))
+                    error += body.toString();
+                throw new IOException(statuscode + ":" + error);
             }
         } catch (JSONException e) {
             throw new IOException(e);

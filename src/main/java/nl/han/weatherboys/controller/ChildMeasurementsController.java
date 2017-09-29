@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.io.IOException;
 
 import static nl.han.weatherboys.dto.ErrorResponse.emberallert;
@@ -55,36 +56,27 @@ public class ChildMeasurementsController {
     @RequestMapping(method = RequestMethod.PUT, value = "/child/{childid}/measurements", name = "Register measurements from child")
     public ResponseEntity registerMeasurement(
             @PathVariable(value="childid") Integer childid,
-            @RequestBody PutData data) {
+            @RequestBody @Valid PutData data) {
         Child child = childRepo.findOne(childid);
         if(child == null)
             return emberallert();
 
-        long now;
-        try {
-            now = jorgService.getTime();
-        } catch (IOException e) {
-            LOGGER.error("Could not get jorgApi time. Falling back to local time", e);
-            now = System.currentTimeMillis()/1000L;
-        }
-
         if(data.brightness != null)
-            brightnessRepo.save(new Brightness(child, now, data.brightness));
+            brightnessRepo.save(new Brightness(child, data.timestamp, data.brightness));
         if(data.humidity != null)
-            humidityRepo.save(new Humidity(child, now, data.humidity));
+            humidityRepo.save(new Humidity(child, data.timestamp, data.humidity));
         if(data.pressure != null)
-            pressureRepo.save(new Pressure(child, now, data.pressure));
+            pressureRepo.save(new Pressure(child, data.timestamp, data.pressure));
         if(data.temperature != null)
-            temperatureRepo.save(new Temperature(child, now, data.temperature));
+            temperatureRepo.save(new Temperature(child, data.timestamp, data.temperature));
 
         LOGGER.info("Received data from child and stored data in db: " + data);
 
         if(data.temperature != null && data.brightness != null){
-            long finalNow = now;
             new Thread(() -> {
                 try {
-                    jorgService.putData(child.name, finalNow, data.temperature, data.brightness);
-                    LOGGER.info("Forwarded data from child to jorgapi: {" + child.name +", "+ finalNow +", "+
+                    jorgService.putData(child.name, data.timestamp, data.temperature, data.brightness);
+                    LOGGER.info("Forwarded data from child to jorgapi: {" + child.name +", "+ data.timestamp +", "+
                             data.temperature +", "+ data.brightness + "}");
                 } catch (IOException e) {
                     LOGGER.error("Could not put data forward to JorgApi", e);
