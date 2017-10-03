@@ -13,6 +13,9 @@ TimedAction* updateHttpClientTimer = new TimedAction();
 Led* led = new Led();
 
 
+
+
+
 void setup() {
   led->setTreshGreen(23.5);
   led->setTreshRed(24.8);
@@ -20,6 +23,7 @@ void setup() {
   startDebugging();
   setupSensors();
   connectEthernet();
+  loginToGateway();
   led->setupLed();
 
   sendWeatherDataTimer->setDelay(5000);
@@ -41,5 +45,6 @@ void loop() {
 void updateLedCallback(){
   led->updateLed();
 }
+
 
 

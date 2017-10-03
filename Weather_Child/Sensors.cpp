@@ -1,8 +1,7 @@
 #pragma once
 #include "Debug.h"
 #include "Sensors.h"
-
-int stationID = 7; // static for now
+ // static for now
 Weather sensor;
 
 
@@ -24,12 +23,6 @@ float getTemperature(void) {
   return data;
 }
 
-int getChildID(void) {
-  int data = stationID;
-  debugln((String)data, SENSOR);
-  return data;
-
-}
 
 float getBrightness(void) {
   float data = analogRead(A0);

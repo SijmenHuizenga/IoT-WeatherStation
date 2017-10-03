@@ -13,7 +13,8 @@ void connectEthernet(void) {
     debugln("Starting ethernet failed. Retrying...", NETWORK);
     delay(1000);
   }
-  debugln("Starting ethernet finished", NETWORK);
+  debug("Starting ethernet finished, IP addres: ", NETWORK);
+  Serial.println(Ethernet.localIP()); // to do: debug
 
   delay(50);
 }

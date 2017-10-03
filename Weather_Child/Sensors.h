@@ -10,5 +10,4 @@
 void setupSensors(void);
 float getHumidity(void);
 float getTemperature(void);
-int getChildID(void);
 float getBrightness(void);

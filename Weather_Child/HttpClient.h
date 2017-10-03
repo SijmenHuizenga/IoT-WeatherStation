@@ -11,3 +11,4 @@ enum NetServerStatus { NET_CONNETING, NET_RECEIVING, NET_WAITING } ;
 
 void updateHttpClient();
 void sendWeatherToGateway();
+void loginToGateway();
