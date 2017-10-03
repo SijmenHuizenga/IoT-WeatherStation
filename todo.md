@@ -5,7 +5,7 @@ Week 2:
 
 Week 3:
 - [x] Probleem herhalende requets dat alleen de helft slaagt.
-- [ ] Architectuurschets + globale projectdocumentatie: functionaliteit, wat doet die wanneer?
+- [x] Architectuurschets + globale projectdocumentatie: functionaliteit, wat doet die wanneer?
 - [x] De gateway stuurt asyncrhoon de ontvangen gegevens naar de jorg api
 - [x] Code refectoren als nodig
 - [x] Lampjes laten branden bij temperaturen
