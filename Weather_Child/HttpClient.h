@@ -7,7 +7,8 @@
 #define SENDHUMID
 #define SENDBRIGHTNESS
 
-enum NetServerStatus { NET_CONNETING, NET_RECEIVING, NET_WAITING } ;
+enum NetServerStatus { NET_CONNETING, NET_RECEIVING, NET_WAITING };
+enum NetType {REGISTER, LOGIN, SENDDATA};
 
 void updateHttpClient();
 void sendWeatherToGateway();
