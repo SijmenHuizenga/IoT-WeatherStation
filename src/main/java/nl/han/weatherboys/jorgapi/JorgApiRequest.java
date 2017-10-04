@@ -26,7 +26,7 @@ abstract class JorgApiRequest {
                 if(body.has("error_description"))
                     error += " " + body.getString("error_description");
                 if(body.has("Message"))
-                    error += " " + body.getString("error_description");
+                    error += " " + body.getString("Message");
                 if(error.equals(""))
                     error += body.toString();
                 throw new IOException(statuscode + ":" + error);

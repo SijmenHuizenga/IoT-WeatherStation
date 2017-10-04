@@ -11,6 +11,7 @@ import nl.han.weatherboys.dto.OkResponse;
 import nl.han.weatherboys.jorgapi.JorgApi;
 import nl.han.weatherboys.storage.model.Child;
 import nl.han.weatherboys.storage.repo.ChildRepo;
+import org.apache.log4j.Logger;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,6 +23,8 @@ import static nl.han.weatherboys.dto.ErrorResponse.error;
 @RestController
 @Api(tags = "Children")
 public class ChildLoginController {
+
+    private final Logger LOGGER = Logger.getLogger(this.getClass());
 
     private final ChildRepo childRepo;
     private final JorgApi jorgApi;
@@ -48,19 +51,21 @@ public class ChildLoginController {
         if(child == null)
             return emberallert();
 
+        long time;
+        try {
+            time = jorgApi.getTime();
+        } catch (IOException e) {
+            LOGGER.info("Could not retreive time ", e);
+            return error("Could not retrieve time");
+        }
+
         if(ip == null || ip.ip == null || ip.ip.isEmpty())
             return error("Body in the wrong format");
 
         child.ip = ip.ip;
         childRepo.save(child);
 
-        long time;
-        try {
-            time = jorgApi.getTime();
-        } catch (IOException e) {
-            e.printStackTrace();
-            return error("Could not retrieve time");
-        }
+        LOGGER.info("Login child " + child.id + " with ip " + child.ip);
 
         return ResponseEntity.ok().body(
                 new ChildLoginResponse(child.id, time)
@@ -83,20 +88,22 @@ public class ChildLoginController {
         if(ip == null || ip.ip == null || ip.ip.isEmpty())
             return error("Body in the wrong format");
 
-        Child child = new Child("NEW");
-        child.ip = ip.ip;
-
-        childRepo.save(child);
-        child.name = "NEW" + child.id;
-        childRepo.save(child);
-
         long time;
         try {
             time = jorgApi.getTime();
         } catch (IOException e) {
-            e.printStackTrace();
+            LOGGER.info("Could not retreive time ", e);
             return error("Could not retrieve time");
         }
+
+        Child child = new Child("NEW");
+        child.ip = ip.ip;
+
+        childRepo.save(child);
+        child.name = "N" + child.id;
+        childRepo.save(child);
+
+        LOGGER.info("Registered new child " + child.id + " with ip " + child.ip);
 
         return ResponseEntity.ok().body(
                 new ChildLoginResponse(child.id, time)

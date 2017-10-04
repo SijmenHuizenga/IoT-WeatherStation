@@ -18,11 +18,11 @@ import static nl.han.weatherboys.dto.ErrorResponse.emberallert;
 
 @RestController
 @Api(tags = "Children")
-public class ChildController {
+public class ChildDataController {
 
     private final ChildRepo childRepo;
 
-    public ChildController(ChildRepo childRepo) {
+    public ChildDataController(ChildRepo childRepo) {
         this.childRepo = childRepo;
     }
 

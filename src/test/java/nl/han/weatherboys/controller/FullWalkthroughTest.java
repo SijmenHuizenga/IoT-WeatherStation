@@ -67,7 +67,6 @@ public class FullWalkthroughTest {
      * 6. Get current time
      */
     @Test
-    @Rollback
     public void testEverything() throws Exception {
 
         int childid = registerchild();
@@ -80,6 +79,7 @@ public class FullWalkthroughTest {
         mockMvc.perform(
                 get("/child")
                         .accept(MediaType.APPLICATION_JSON))
+                .andDo(mvcResult -> System.out.println(mvcResult.getResponse().getContentAsString()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].id").value(childid))
                 .andExpect(jsonPath("$[0].ip").value("192.168.178.0.1"))
@@ -164,7 +164,9 @@ public class FullWalkthroughTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
+                .andDo(mvcResult -> System.out.println(mvcResult.getResponse().getContentAsString()))
                 .andExpect(jsonPath("$.id").exists())
+                .andDo(mvcResult -> System.out.println(mvcResult.getResponse().getContentAsString()))
                 .andExpect(jsonPath("$.id").value(getIdExtractor(id -> childid[0] = id)));
         return childid[0];
     }
