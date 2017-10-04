@@ -13,3 +13,13 @@ enum NetType {REGISTER, LOGIN, SENDDATA};
 void updateHttpClient();
 void sendWeatherToGateway();
 void loginToGateway();
+
+struct Range {
+  int start;
+  int end;
+};
+
+Range findJsonFieldRange(char *json, char *field);
+
+
+
