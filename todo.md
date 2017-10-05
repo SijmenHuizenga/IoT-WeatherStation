@@ -24,7 +24,7 @@ Week 5:
 Week 6:
 - [ ] Gateway gegevens/grafiek opvragen
 - [ ] Temperatuurmeter eiken
-- [ ] Tijdsyncrhonisatie; Arduino vraagt aan gateway de huidge tijd op bij startup. De gateway vraagt dit weer op aan de jorgvisch-api. De arduino houdt dan lokaal de tijd bij om de tijd te gebruiken bij verzenden. Dus ook extra veld meesturen naar gateway met timestamp.
+- [x] Tijdsyncrhonisatie; Arduino vraagt aan gateway de huidge tijd op bij startup. De gateway vraagt dit weer op aan de jorgvisch-api. De arduino houdt dan lokaal de tijd bij om de tijd te gebruiken bij verzenden. Dus ook extra veld meesturen naar gateway met timestamp.
 
 
 - [x] Knopje toevoegen voor ID resetten
