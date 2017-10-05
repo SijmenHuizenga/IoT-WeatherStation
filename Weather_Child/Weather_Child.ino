@@ -1,6 +1,7 @@
 #pragma once
 #include "Network.h"
 #include "Sensors.h"
+#include "Button.h"
 #include "Debug.h"
 #include "Led.h"
 #include "Timer.h"
@@ -18,6 +19,7 @@ void setup() {
  
   startDebugging();
   setupSensors();
+  setupButton();
   connectEthernet();
   loginToGateway();
   led->setupLed();
@@ -33,6 +35,7 @@ void setup() {
 }
 
 void loop() {
+  readButton();
   sendWeatherDataTimer->update();
   updateLedsTimer->update();
   updateHttpClientTimer->update();

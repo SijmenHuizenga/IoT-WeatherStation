@@ -36,6 +36,7 @@ void readWeatherResponseLine(char* pointerToLineBuffer);
 unsigned long getTime();
 int freeRam();
 
+
 String getIpAddress(IPAddress address);
 
 void sendWeatherToGateway(void) {
@@ -349,5 +350,13 @@ int freeRam () {
   extern int __heap_start, *__brkval; 
   int v; 
   return (int) &v - (__brkval == 0 ? (int) &__heap_start : (int) __brkval); 
+}
+
+void resetChildID() {
+  EEPROM.write(0, 0);
+  debugln(F("Child ID has been reset, requesting new."), NETWORK);
+  client.stop();
+  serverstate = NET_CONNETING;
+  requeststate = REGISTER;  
 }
 

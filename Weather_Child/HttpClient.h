@@ -13,6 +13,7 @@ enum NetType {REGISTER, LOGIN, SENDDATA};
 void updateHttpClient();
 void sendWeatherToGateway();
 void loginToGateway();
+void resetChildID();
 
 struct Range {
   int start;
