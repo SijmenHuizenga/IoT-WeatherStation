@@ -31,14 +31,14 @@ void Led::updateLed() {
   setTemp(getTemperature());
 
   byte ledOn = 0;
-  
-  if(this->temperature < this->treshGreen)
+
+  if (this->temperature < this->treshGreen)
     ledOn = GREENLED;
   else if (this->temperature >= this->treshGreen && this->temperature <= this->treshRed)
     ledOn = YELLOWLED;
   else if (this->temperature > this->treshRed)
     ledOn = REDLED;
-  else{
+  else {
     debug(F("TRESH GREEN SHOULD BE < THAN TRESH RED!!"), LED);
     return;
   }
@@ -48,7 +48,7 @@ void Led::updateLed() {
   setLedOnOrOff(REDLED, ledOn == REDLED);
 }
 
-void Led::setLedOnOrOff(byte lednr, bool ison){
+void Led::setLedOnOrOff(byte lednr, bool ison) {
   digitalWrite(lednr, ison ? HIGH : LOW);
 }
 

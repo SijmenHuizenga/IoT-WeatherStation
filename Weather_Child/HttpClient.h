@@ -7,20 +7,31 @@
 #define SENDHUMID
 #define SENDBRIGHTNESS
 
-enum NetServerStatus { NET_CONNETING, NET_RECEIVING, NET_WAITING };
-enum NetType {REGISTER, LOGIN, SENDDATA};
-
-void updateHttpClient();
 void sendWeatherToGateway();
+
 void loginToGateway();
+
 void resetChildID();
 
-struct Range {
-  int start;
-  int end;
-};
+void clientConnectAndSend();
+void clientReceiveAndClose();
+void handleBodyPart(char *lineBuffer);
 
-Range findJsonFieldRange(char *json, char *field);
+void sendWeather();
+void sendWeatherHeader(unsigned int headerLength);
+
+void sendLogin();
+void sendRegister();
+void sendLoginRegisterThings();
+
+void readLoginResponseLine(char* lineBuffer);
+void readRegisterResponseLine(char* lineBuffer);
+void logAndRetry(char* lineBuffer);
+void handleTimePartOfLoginRegisterResponse(char* lineBuffer);
+
+void readWeatherResponseLine(char* lineBuffer);
+
+unsigned long getTime();
 
 
 

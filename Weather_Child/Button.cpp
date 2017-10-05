@@ -1,16 +1,16 @@
 #include "Button.h"
 #include "HttpClient.h"
-int buttonState;             
+int buttonState;
 int lastButtonState = LOW;
 
-unsigned long lastDebounceTime = 0;  
+unsigned long lastDebounceTime = 0;
 unsigned long debounceDelay = 50;
 
-void setupButton(){
+void setupButton() {
   pinMode(BUTTONPIN, INPUT_PULLUP);
 }
 
-void readButton(){
+void readButton() {
   int reading = digitalRead(BUTTONPIN);
   if (reading != lastButtonState) {
     lastDebounceTime = millis();
@@ -22,11 +22,11 @@ void readButton(){
         buttonAction();
       }
     }
-  } 
-  lastButtonState = reading;  
+  }
+  lastButtonState = reading;
 }
 
-void buttonAction(){
+void buttonAction() {
   resetChildID();
 }
 

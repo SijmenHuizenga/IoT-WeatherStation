@@ -1,10 +1,13 @@
 #pragma once
 #define DEBUGNETWORK
 #define DEBUGSENSOR
+#define DEBUGLED
 
-#include <Arduino.h> 
+#include <Arduino.h>
 
-typedef enum DebugType {SENSOR, NETWORK, LED} DebugType;
+typedef enum DebugType {
+  SENSOR, NETWORK, LED
+} DebugType;
 
 void startDebugging();
 
@@ -14,38 +17,54 @@ void startDebugging();
 //https://stackoverflow.com/questions/495021/why-can-templates-only-be-implemented-in-the-header-file
 //yes, there are other solutions, but i dont want to complicate things by introducing classes.
 template<typename T>
-void debugln(T message, DebugType type) {
-  if(type == SENSOR) {
-    #ifdef DEBUGSENSOR
-      Serial.print(F("[SENS] "));
-      Serial.println(message);
-    #endif
-  } else if(type == NETWORK) {
-    #ifdef DEBUGNETWORK
-      Serial.print(F("[NET] "));
-      Serial.println(message);
-    #endif
-  } else if(type == LED) {
-    #ifdef LED
-      Serial.print(F("[LED] "));
-      Serial.println(message);
-    #endif
+void debug(T message, DebugType type, bool printnl, bool printprefix) {
+  switch (type) {
+#ifdef DEBUGSENSOR
+    case SENSOR:
+      if (printprefix)
+        Serial.print(F("[SENS] "));
+      Serial.print(message);
+      if (printnl)
+        Serial.println();
+      break;
+#endif
+#ifdef DEBUGNETWORK
+    case NETWORK:
+      if (printprefix)
+        Serial.print(F("[NET] "));
+      Serial.print(message);
+      if (printnl)
+        Serial.println();
+      break;
+#endif
+#ifdef DEBUGLED
+    case  LED:
+      if (printprefix)
+        Serial.print(F("[LED] "));
+      Serial.print(message);
+      if (printnl)
+        Serial.println();
+      break;
+#endif
   }
 }
 
 template<typename T>
 void debug(T message, DebugType type) {
-  if(type == SENSOR) {
-    #ifdef DEBUGSENSOR
-      Serial.print(message);
-    #endif
-  } else if(type == NETWORK) {
-    #ifdef DEBUGNETWORK
-      Serial.print(message);
-    #endif
-  } else if(type == LED) {
-    #ifdef LED
-      Serial.print(message);
-    #endif
-  }
+  debug(message, type, false, true);
+}
+
+template<typename T>
+void debugln(T message, DebugType type) {
+  debug(message, type, true, true);
+}
+
+template<typename T>
+void bebugln(T message, DebugType type) {
+  debug(message, type, true, false);
+}
+
+template<typename T>
+void bebug(T message, DebugType type) {
+  debug(message, type, false, false);
 }

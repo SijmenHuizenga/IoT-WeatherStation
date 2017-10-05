@@ -1,6 +1,6 @@
 #pragma once
 
-class TimedAction{
+class TimedAction {
   private:
     unsigned long lastMils;
     unsigned int delay;

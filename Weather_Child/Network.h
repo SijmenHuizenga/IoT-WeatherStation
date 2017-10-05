@@ -2,9 +2,18 @@
 
 #include <Ethernet2.h>
 
-extern byte myMac[];
+enum NetServerStatus { NET_CONNETING, NET_RECEIVING, NET_WAITING };
+enum NetType {REGISTER, LOGIN, SENDDATA};
+
+extern NetServerStatus serverstate;
+extern NetType requeststate;
+
 extern IPAddress gatewayIp;
 
-void connectEthernet(void);
+void updateNetwork();
+void connectNetwork(void);
 
+//utility functionalities:
+int getHttpStatusCode(char* line);
+String getIpAddress(IPAddress address);
 

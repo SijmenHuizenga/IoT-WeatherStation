@@ -1,7 +1,7 @@
 #pragma once
 #include "Debug.h"
 #include "Sensors.h"
- // static for now
+// static for now
 Weather sensor;
 
 
@@ -14,7 +14,7 @@ float getHumidity(void) {
   float data = sensor.getRH();
   debugln(data, SENSOR);
   return data;
-  
+
 }
 
 float getTemperature(void) {
