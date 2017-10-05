@@ -27,7 +27,7 @@ Week 6:
 - [ ] Tijdsyncrhonisatie; Arduino vraagt aan gateway de huidge tijd op bij startup. De gateway vraagt dit weer op aan de jorgvisch-api. De arduino houdt dan lokaal de tijd bij om de tijd te gebruiken bij verzenden. Dus ook extra veld meesturen naar gateway met timestamp.
 
 
-[x] Knopje toevoegen voor ID resetten
+- [x] Knopje toevoegen voor ID resetten
 * DNS Server
 * Data opnieuw versturen naar Jorg als dat niet lukt
 * Authenticatie tussen Child en Gateway
