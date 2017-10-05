@@ -17,17 +17,17 @@ template<typename T>
 void debugln(T message, DebugType type) {
   if(type == SENSOR) {
     #ifdef DEBUGSENSOR
-      Serial.print("[SENS] ");
+      Serial.print(F("[SENS] "));
       Serial.println(message);
     #endif
   } else if(type == NETWORK) {
     #ifdef DEBUGNETWORK
-      Serial.print("[NET] ");
+      Serial.print(F("[NET] "));
       Serial.println(message);
     #endif
   } else if(type == LED) {
     #ifdef LED
-      Serial.print("[LED] ");
+      Serial.print(F("[LED] "));
       Serial.println(message);
     #endif
   }

@@ -5,19 +5,20 @@
 #include "HttpClient.h"
 #include <EEPROM.h>;
 
+
 #define READBUFFERSIZSE 40
+Range NULLRANGER = {.start = 0, .end=0};
 
 EthernetClient client;
 
 NetServerStatus serverstate;
 NetType requeststate;
-
-Range NULLRANGER = {.start = 0, .end=0};
+int responseStatusCode = -1;
 
 int childID;
 bool hasID;
-
-int responseStatusCode = -1;
+unsigned long serverTime;
+unsigned long serverTimeSync;
 
 void sendWeather();
 void sendWeatherHeader(String headerLength);
@@ -26,12 +27,14 @@ void sendRegister();
 void tryConnectAndSend();
 void tryReceiveAndClose();
 int getHttpStatusCode(char* line);
-int readIdFromJson(char* line);
+byte readIdFromJson(char* line);
 unsigned long readTimeFromJson(char* line);
 
 void readRegisterResponseLine(char* pointerToLineBuffer);
 void readLoginResponseLine(char* pointerToLineBuffer);
 void readWeatherResponseLine(char* pointerToLineBuffer);
+unsigned long getTime();
+int freeRam();
 
 String getIpAddress(IPAddress address);
 
@@ -89,7 +92,7 @@ void tryReceiveAndClose(){
   }
   free(lineBuffer);
   
-  if (!client.connected()) {
+  if (serverstate == NET_RECEIVING && !client.connected()) {
     debugln("disconnecting.", NETWORK);
     client.stop();
     serverstate = NET_WAITING;
@@ -106,10 +109,11 @@ void tryConnectAndSend(){
     serverstate = NET_RECEIVING;
     responseStatusCode = -1;
   } else
-    debugln("connection failed", NETWORK); 
+    debugln(F("connection failed"), NETWORK); 
 }
 
-void sendWeather() {
+void sendWeather() { 
+debugln(freeRam(),NETWORK); 
   String body = "{";
 #ifdef SENDHUMID
   body = body + "\"humidity\": " + (String)getHumidity();
@@ -118,14 +122,18 @@ void sendWeather() {
   body = body + ",\"temperature\": " + (String)getTemperature();
 #endif
 #ifdef SENDBRIGHTNESS
-  body = body + ",\"brightness\": " + (String)getBrightness();
+  body = body + ",\"brightness\": " + (String)(getBrightness()/10);
+debugln(freeRam(),NETWORK);
 #endif
+  body = body + ",\"timestamp\": ";
+  body.concat(getTime());
+debugln(freeRam(),NETWORK);
   body = body + "}";
-
+debugln(freeRam(),NETWORK);
   sendWeatherHeader((String)body.length()); //todo: static body length?
-
-  client.println((String)body);
-  debugln("Sent body: " + (String)body, NETWORK);
+  client.println(body);
+  debugln(F("Sent body: "), NETWORK);
+  debugln(body,NETWORK);
 }
 
 void sendWeatherHeader(String bodyLength) {
@@ -140,32 +148,35 @@ void sendWeatherHeader(String bodyLength) {
 void sendLoginRegisterThings(){
   String body = "{"; body = body + "\"ip\": \"" + getIpAddress(Ethernet.localIP()); body = body + "\"}";
   
-  client.println("Host: 192.168.178.55:8080");
-  client.println("Content-Type: application/json");
-  client.println("Content-Length: " + (String)body.length());
-  client.println("Connection: close");
-  client.println();
+  client.println(F("Host: 192.168.178.55:8080"));
+  client.println(F("Content-Type: application/json"));
+  client.print(F("Content-Length: "));
+  client.println((String)body.length());
+
+  client.println(F("Connection: close \n"));
   client.println((String)body);
 
   debugln("Sent body: " + (String)body, NETWORK);
 }
 
 void sendLogin(){
-    client.println("PUT /child/" + String(childID) + "/login HTTP/1.1");
-    debugln("PUT /child/" + String(childID) + "/login HTTP/1.1", NETWORK); 
+    client.print(F("POST /child/")); client.print(String(childID)); client.println(F("/login HTTP/1.1"));
+    debugln("POST /child/" + String(childID) + "/login HTTP/1.1", NETWORK); 
     sendLoginRegisterThings();
 }
 
 void sendRegister(){
-    client.println("POST /child/register HTTP/1.1");
-    debugln("PUT /child/register HTTP/1.1", NETWORK);
+    client.println(F("POST /child/register HTTP/1.1"));
+    debugln(F("POST /child/register HTTP/1.1"), NETWORK);
     sendLoginRegisterThings();
 }
 
 void loginToGateway(){
-  int eepromid = EEPROM.read(0);
+  int eepromid = EEPROM.read(0);  
   serverstate = NET_CONNETING;
   if (eepromid > 0) {
+    debugln("eepromid =" + (String)eepromid, NETWORK);
+    childID = eepromid;
     requeststate = LOGIN;
   } else {
     requeststate = REGISTER;
@@ -179,9 +190,16 @@ void readRegisterResponseLine(char* line){
   }
   
   if(line[0] == '{'){
-    int id = readIdFromJson(line);
+    byte id = readIdFromJson(line);
     debugln(id, NETWORK);
-    //todo: check if -1 wan dan is er geen id gekomen. Als wel id beschikbaar dan opslaan in eeprom ergens en meesturen met alle andere requests
+    if(id > 0) {
+      EEPROM.write(0, id);
+      childID = id;
+    } else {
+      debugln(F("No ID received, retrying"), NETWORK);
+      client.stop();
+      requeststate = REGISTER;
+    }
   
     unsigned long ti = readTimeFromJson(line);
     debugln(ti, NETWORK);
@@ -192,7 +210,7 @@ void readRegisterResponseLine(char* line){
 unsigned long readTimeFromJson(char* line){
   Range timeRange = findJsonFieldRange(line, "\"time\"");
   if(&timeRange == &NULLRANGER){
-     debugln("Could not find time in following line", NETWORK);
+     debugln(F("Could not find time in following line"), NETWORK);
      debugln(line, NETWORK);
      return 0;
   }else{
@@ -205,15 +223,15 @@ unsigned long readTimeFromJson(char* line){
   }
 }
 
-int readIdFromJson(char* line){
+byte readIdFromJson(char* line){
   Range idRange = findJsonFieldRange(line, "\"id\"");
 
   if(&idRange == &NULLRANGER){
-    debugln("Could not find id in following line", NETWORK);
+    debugln(F("Could not find id in following line"), NETWORK);
     debugln(line, NETWORK);
     return -1;
   }else{
-    int id = 0;
+    byte id = 0;
 
     for(int i = idRange.start; i <= idRange.end; i++){
       id = id * 10;
@@ -291,18 +309,24 @@ int getHttpStatusCode(char* line){
 void readLoginResponseLine(char* line){
   if(responseStatusCode != 200){
       debugln(line, NETWORK);
+      debugln(F("No ID time, retrying"), NETWORK);
+      client.stop();
+      serverstate = NET_CONNETING;
+      delay(2000);
       return;
   }
-  
-  if(line[0] == '{'){
-    int id = readIdFromJson(line);
-    debugln(id, NETWORK);
-    //todo: check if -1 wan dan is er geen id gekomen. Als wel id beschikbaar dan controleren met bestaande id en als dat goed is dan verder.
-    //als het id niet overeenkomt ben bekende id dan is er iets heel raars en dan het nieuwe id overnemen misschien?? todo: even overleggen
-  
+  if(line[0] == '{'){  
     unsigned long ti = readTimeFromJson(line);
+    debugln(F("ONTVANGEN TIJD:"), NETWORK);
     debugln(ti, NETWORK);
-    //todo: check if ti == 0, want dan was er geen time beschikbaar. Anders tijd opslaan en bijhouden.
+    if(ti < 1) {
+      debugln(F("No ID time, retrying"), NETWORK);
+      client.stop();
+      serverstate = NET_CONNETING;
+    } else {
+      serverTime = ti;
+      serverTimeSync = millis();
+    }
   }
 }
 
@@ -316,5 +340,14 @@ String getIpAddress(IPAddress address){
          String(address[1]) + "." +
          String(address[2]) + "." +
          String(address[3]);
+}
+
+unsigned long getTime() {  
+  return serverTime + ((millis() - serverTimeSync)/1000);
+}
+int freeRam () {
+  extern int __heap_start, *__brkval; 
+  int v; 
+  return (int) &v - (__brkval == 0 ? (int) &__heap_start : (int) __brkval); 
 }
 

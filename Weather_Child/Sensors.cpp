@@ -7,7 +7,7 @@ Weather sensor;
 
 void setupSensors(void) {
   sensor.begin();
-  debugln("Sensors started", SENSOR);
+  debugln(F("Sensors started"), SENSOR);
 }
 
 float getHumidity(void) {

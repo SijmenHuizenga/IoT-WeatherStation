@@ -39,7 +39,7 @@ void Led::updateLed() {
   else if (this->temperature > this->treshRed)
     ledOn = REDLED;
   else{
-    debug("TRESH GREEN SHOULD BE < THAN TRESH RED!!", LED);
+    debug(F("TRESH GREEN SHOULD BE < THAN TRESH RED!!"), LED);
     return;
   }
 
