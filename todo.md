@@ -11,10 +11,10 @@ Week 3:
 - [x] Lampjes laten branden bij temperaturen
 
 Week 4:
-- [ ] Testframeworks, eventueel automatisch, bedenkenen en opzeten
+- [x] Testframeworks, eventueel automatisch, bedenkenen en opzeten
 - [x] DHCP implementeren op arduino en pi en documenteren handleiding
-- [ ] Als de arduino opstart en nog geen id heeft dan een request sturen naar de gateway met huidige ip en id `-1`. De response van de gateway bevat de nieuwe id en die wordt opgeslagen in eeprom.
-- [ ] Als de arduino opstart en al een id in eeprom heeft staan dan een request naar de gateway met huidige id en ip. De response van de gateway hoeft niet worden geparsed.
+- [x] Als de arduino opstart en nog geen id heeft dan een request sturen naar de gateway met huidige ip en id `-1`. De response van de gateway bevat de nieuwe id en die wordt opgeslagen in eeprom.
+- [x] Als de arduino opstart en al een id in eeprom heeft staan dan een request naar de gateway met huidige id en ip. De response van de gateway hoeft niet worden geparsed.
 
 Week 5:
 - [ ] Arduino gebruiken als http server om settings te ontvangen.
