@@ -17,7 +17,7 @@ Week 4:
 - [x] Als de arduino opstart en al een id in eeprom heeft staan dan een request naar de gateway met huidige id en ip. De response van de gateway hoeft niet worden geparsed.
 
 Week 5:
-- [ ] Arduino gebruiken als http server om settings te ontvangen.
+- [x] Arduino gebruiken als http server om settings te ontvangen.
 - [ ] Temperatuurgrenzen configurabel maken via gateway. Vanaf gateway requestje naar arduino en daar dingen opslaan.
 - [ ] Gateway deployment op Pi met docker
 
