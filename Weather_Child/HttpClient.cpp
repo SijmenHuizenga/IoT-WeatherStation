@@ -8,29 +8,35 @@
 #include <EEPROM.h>;
 #include <Arduino.h>
 
-#define READBUFFERSIZSE 40
-
 EthernetClient client;
 
+IPAddress gatewayIp(192, 168, 178, 55);
+NetClientStatus clientstate = NET_WAITING;
+NetRequestType requesttypestate;
 int responseStatusCode = -1;
 
 int childID = -1;
 unsigned long serverTime = 0;
 unsigned long serverTimeSync = 0;
 
-
-String getIpAddress(IPAddress address);
+void updateHttpClient() {
+    if (clientstate == NET_RECEIVING) {
+        clientReceiveAndClose();
+    } else if (clientstate == NET_CONNETING) {
+        clientConnectAndSend();
+    }
+}
 
 void sendWeatherToGateway(void) {
-  if (childID != -1 && serverTime != 0 && serverstate == NET_WAITING) {
-    serverstate = NET_CONNETING;
-    requeststate = SENDDATA;
+  if (childID != -1 && serverTime != 0 && clientstate == NET_WAITING) {
+    clientstate = NET_CONNETING;
+    requesttypestate = SENDDATA;
   }
 }
 
 void clientConnectAndSend() {
   if (client.connect(gatewayIp, 8080)) {
-    switch (requeststate) {
+    switch (requesttypestate) {
       case REGISTER:
         sendRegister();
         break;
@@ -41,10 +47,10 @@ void clientConnectAndSend() {
         sendWeather();
         break;
     }
-    serverstate = NET_RECEIVING;
+    clientstate = NET_RECEIVING;
     responseStatusCode = -1;
   } else
-    debugln(F("connection failed"), NETWORK);
+    debugln(F("connection failed"), WEBCLIENT);
 }
 
 void sendWeather() {
@@ -68,8 +74,8 @@ void sendWeather() {
   sendWeatherHeader(body.length()); //todo: static body length?
   client.println(body);
 
-  debug(F("Sent body: "), NETWORK);
-  bebugln(body, NETWORK);
+  debug(F("Sent body: "), WEBCLIENT);
+  bebugln(body, WEBCLIENT);
 }
 
 void sendWeatherHeader(unsigned int bodyLength) {
@@ -85,26 +91,26 @@ void sendWeatherHeader(unsigned int bodyLength) {
 void loginToGateway() {
   int eepromid = EEPROM.read(0);
   if (eepromid > 0) {
-    debugln("eepromid =" + (String) eepromid, NETWORK);
+    debugln("eepromid =" + (String) eepromid, WEBCLIENT);
     childID = eepromid;
-    requeststate = LOGIN;
+    requesttypestate = LOGIN;
   } else {
-    requeststate = REGISTER;
+    requesttypestate = REGISTER;
   }
-  serverstate = NET_CONNETING;
+  clientstate = NET_CONNETING;
 }
 
 void sendLogin() {
   client.print(F("POST /child/"));
   client.print(String(childID));
   client.println(F("/login HTTP/1.1"));
-  debugln("POST /child/" + String(childID) + "/login HTTP/1.1", NETWORK);
+  debugln("POST /child/" + String(childID) + "/login HTTP/1.1", WEBCLIENT);
   sendLoginRegisterThings();
 }
 
 void sendRegister() {
   client.println(F("POST /child/register HTTP/1.1"));
-  debugln(F("POST /child/register HTTP/1.1"), NETWORK);
+  debugln(F("POST /child/register HTTP/1.1"), WEBCLIENT);
   sendLoginRegisterThings();
 }
 
@@ -121,14 +127,14 @@ void sendLoginRegisterThings() {
   client.println(F("Connection: close \n"));
   client.println(body);
 
-  debugln(body, NETWORK);
+  debugln(body, WEBCLIENT);
 }
 
 void clientReceiveAndClose() {
   unsigned int charBufferCount = 0;
 
   //one char extra as termination byte
-  char *lineBuffer = (char *) calloc('\0', (READBUFFERSIZSE + 1) * sizeof(char));
+  char *lineBuffer = (char *) calloc(READBUFFERSIZSE + 1, sizeof(char));
 
   bool inBody = false;
 
@@ -138,8 +144,8 @@ void clientReceiveAndClose() {
       lineBuffer[charBufferCount] = c;
       charBufferCount++;
     }
-    if (c == '\n' || charBufferCount == READBUFFERSIZSE - 1) {
-      //check for two newlines, than we are in buffer
+    if (c == '\n' || charBufferCount == READBUFFERSIZSE) {
+      //check for two newlines, than we are on the seperation of headers and body
       if (charBufferCount == 1 && lineBuffer[0] == '\r') {
         inBody = true;
         continue;
@@ -149,28 +155,30 @@ void clientReceiveAndClose() {
         handleBodyPart(lineBuffer);
       } else {
         int code = getHttpStatusCode(lineBuffer);
-        if (code != -1)
+        if (code != -1){
           responseStatusCode = code;
+            debug(F("Status code: "), WEBCLIENT);
+            bebugln(code, WEBCLIENT);
+        }
       }
 
-      charBufferCount = 0;
-      for (int i = 0; i < READBUFFERSIZSE + 1; i++)
-        lineBuffer[i] = '\0';
+        clearBuffer(lineBuffer, charBufferCount);
+        charBufferCount = 0;
     }
   }
   if (charBufferCount > 0)
     handleBodyPart(lineBuffer);
   free(lineBuffer);
 
-  if (serverstate == NET_RECEIVING && !client.connected()) {
-    debugln("disconnecting.", NETWORK);
+  if (clientstate == NET_RECEIVING && !client.connected()) {
+    debugln("disconnecting.", WEBCLIENT);
     client.stop();
-    serverstate = NET_WAITING;
+    clientstate = NET_WAITING;
   }
 }
 
 void handleBodyPart(char *lineBuffer) {
-  switch (requeststate) {
+  switch (requesttypestate) {
     case REGISTER:
       readRegisterResponseLine(lineBuffer);
       break;
@@ -191,12 +199,12 @@ void readRegisterResponseLine(char *lineBuffer) {
 
   if (lineBuffer[0] == '{') {
     byte id = readIdFromJson(lineBuffer);
-    debugln(id, NETWORK);
+    debugln(id, WEBCLIENT);
     if (id > 0) {
       EEPROM.write(0, id);
       childID = id;
-      debug(F("ONTVANGEN ID:"), NETWORK);
-      bebugln(id, NETWORK);
+      debug(F("ONTVANGEN ID:"), WEBCLIENT);
+      bebugln(id, WEBCLIENT);
     } else {
       logAndRetry(lineBuffer);
       return;
@@ -204,7 +212,7 @@ void readRegisterResponseLine(char *lineBuffer) {
 
     unsigned long ti = readTimeFromJson(lineBuffer);
 
-    requeststate = LOGIN;
+    requesttypestate = LOGIN;
     handleTimePartOfLoginRegisterResponse(lineBuffer);
   }
 }
@@ -220,16 +228,16 @@ void readLoginResponseLine(char *lineBuffer) {
 }
 
 void logAndRetry(char* lineBuffer) {
-  debugln(lineBuffer, NETWORK);
-  debugln(F("Login/Register failed, retrying"), NETWORK);
+  debugln(lineBuffer, WEBCLIENT);
+  debugln(F("Login/Register failed, retrying"), WEBCLIENT);
   client.stop();
-  serverstate = NET_CONNETING;
+  clientstate = NET_CONNETING;
 }
 
 void handleTimePartOfLoginRegisterResponse(char* lineBuffer) {
   unsigned long ti = readTimeFromJson(lineBuffer);
-  debug(F("ONTVANGEN TIJD:"), NETWORK);
-  bebugln(ti, NETWORK);
+  debug(F("ONTVANGEN TIJD:"), WEBCLIENT);
+  bebugln(ti, WEBCLIENT);
   if (ti < 1) {
     logAndRetry(lineBuffer);
   } else {
@@ -240,7 +248,7 @@ void handleTimePartOfLoginRegisterResponse(char* lineBuffer) {
 
 void readWeatherResponseLine(char *lineBuffer) {
   if (responseStatusCode != 200)
-    debugln(lineBuffer, NETWORK);
+    debugln(lineBuffer, WEBCLIENT);
 }
 
 unsigned long getTime() {
@@ -249,10 +257,10 @@ unsigned long getTime() {
 
 void resetChildID() {
   EEPROM.write(0, 0);
-  debugln(F("Child ID has been reset, requesting new."), NETWORK);
+  debugln(F("Child ID has been reset, requesting new."), WEBCLIENT);
   client.stop();
-  serverstate = NET_CONNETING;
-  requeststate = REGISTER;
+  clientstate = NET_CONNETING;
+  requesttypestate = REGISTER;
 
   childID = -1;
   serverTime = 0;

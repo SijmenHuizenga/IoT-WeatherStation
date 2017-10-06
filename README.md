@@ -39,7 +39,7 @@ Example:
 startDebugging();
 int i = 3;
 
-debugln(i, NETWORK);
+debugln(i, WEBCLIENT);
 ```
 Output: `[NET] 3`
 

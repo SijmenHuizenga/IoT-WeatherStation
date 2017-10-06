@@ -2,18 +2,13 @@
 
 #include <Ethernet2.h>
 
-enum NetServerStatus { NET_CONNETING, NET_RECEIVING, NET_WAITING };
-enum NetType {REGISTER, LOGIN, SENDDATA};
+#define READBUFFERSIZSE 40
 
-extern NetServerStatus serverstate;
-extern NetType requeststate;
-
-extern IPAddress gatewayIp;
-
-void updateNetwork();
 void connectNetwork(void);
 
 //utility functionalities:
 int getHttpStatusCode(char* line);
 String getIpAddress(IPAddress address);
 
+void clearBuffer(char *buffer, int size);
+bool startsWith(char* line, const char *needle);

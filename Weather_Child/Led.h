@@ -16,6 +16,10 @@ class Led {
     void setupLed();
     void setTreshRed(float temp);
     void setTreshGreen(float temp);
+    float getTreshGreen();
+    float getTreshRed();
     void setTemp(float temp);
     void updateLed();
 };
+
+extern Led *led;

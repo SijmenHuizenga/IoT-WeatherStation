@@ -1,12 +1,13 @@
 #pragma once
-#define DEBUGNETWORK
-#define DEBUGSENSOR
-#define DEBUGLED
+//#define DEBUGWEBCLIENT
+//#define DEBUGSENSOR
+//#define DEBUGLED
+#define DEBUGWEBSERVER
 
 #include <Arduino.h>
 
 typedef enum DebugType {
-  SENSOR, NETWORK, LED
+  SENSOR, WEBCLIENT, LED, WEBSERVER
 } DebugType;
 
 void startDebugging();
@@ -28,23 +29,32 @@ void debug(T message, DebugType type, bool printnl, bool printprefix) {
         Serial.println();
       break;
 #endif
-#ifdef DEBUGNETWORK
-    case NETWORK:
+#ifdef DEBUGWEBCLIENT
+    case WEBCLIENT:
       if (printprefix)
-        Serial.print(F("[NET] "));
+        Serial.print(F("[CLI] "));
       Serial.print(message);
       if (printnl)
         Serial.println();
       break;
 #endif
 #ifdef DEBUGLED
-    case  LED:
+    case LED:
       if (printprefix)
         Serial.print(F("[LED] "));
       Serial.print(message);
       if (printnl)
         Serial.println();
       break;
+#endif
+#ifdef DEBUGWEBSERVER
+      case WEBSERVER:
+          if (printprefix)
+              Serial.print(F("[SER] "));
+          Serial.print(message);
+          if (printnl)
+              Serial.println();
+          break;
 #endif
   }
 }

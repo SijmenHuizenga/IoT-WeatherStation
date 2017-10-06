@@ -7,6 +7,7 @@
 #include "Led.h"
 #include "Timer.h"
 #include "HttpClient.h"
+#include "HttpServer.h"
 
 #define ETHERNETSHIELDv2
 
@@ -14,8 +15,7 @@
 TimedAction *sendWeatherDataTimer = new TimedAction();
 TimedAction *updateLedsTimer = new TimedAction();
 TimedAction *updateHttpClientTimer = new TimedAction();
-
-Led *led = new Led();
+TimedAction *updateHttpServerTimer = new TimedAction();
 
 void setup() {
   led->setTreshGreen(23.5);
@@ -26,13 +26,17 @@ void setup() {
   setupButton();
   connectNetwork();
   loginToGateway();
-  led->setupLed();
+    led->setupLed();
+    startHttpServer();
 
   sendWeatherDataTimer->setDelay(5000);
   sendWeatherDataTimer->setCallback(sendWeatherToGateway);
 
   updateHttpClientTimer->setDelay(250);
-  updateHttpClientTimer->setCallback(updateNetwork);
+    updateHttpClientTimer->setCallback(updateHttpClient);
+
+    updateHttpServerTimer->setDelay(240);
+    updateHttpServerTimer->setCallback(updateHttpServer);
 
   updateLedsTimer->setDelay(400);
   updateLedsTimer->setCallback(updateLedCallback);
@@ -43,6 +47,7 @@ void loop() {
   updateHttpClientTimer->update();
   sendWeatherDataTimer->update();
   updateLedsTimer->update();
+    updateHttpServerTimer->update();
 }
 
 void updateLedCallback() {

@@ -1,0 +1,60 @@
+openapi: 3.0.0
+info:
+  description: "This is the webserver that runs on childs of the wheter station. Using this api it is possible to get the status of the station or to configure some settings."
+  version: "1.0.0"
+  title: "Child api"
+paths:
+  /settings:
+    get:
+      summary: Get the current settings on the child.
+      responses:
+        '200':
+          description: The current settings
+          content: 
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/Settings'
+    put:
+      summary: Update the child settings.
+      description: "NOTE: the total size of the body must me smaller than 40 characters. Otherwise 400 bad request is returned."
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Settings'
+      responses:
+        '200':
+          description: ok
+        '400':
+          description: something went wrong. Probably unparseable request
+  /ping:
+    get:
+      summary: Ping to see if the arduino is available
+      responses:
+        '200':
+          description: everything is ok
+          content:
+            'application/json':
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "ok"
+              
+components:
+  schemas:
+    Settings:
+      type: object
+      properties:
+        g:
+          type: number
+          format: float
+          description: "Treshhold green: When the temparture measured by the child is lower than this value than the green led lights up. When the measured temperatue is higher than than this value but 
+lower than the `treshhold-red` value than the orange led lights up. This value must be smaller than the 'r' value and below 100. Negative values are not allowed."
+        r:
+          type: number
+          format: float
+          description: "Treshhol red: when the termperature measured by the child is higher than this value than the red led lights up. This value must be bigger than the 'g' value and not be bigger than 
+100. Negative values are not allowed."
+  

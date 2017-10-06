@@ -3,6 +3,8 @@
 #include "Debug.h"
 #include "Sensors.h"
 
+Led* led = new Led();
+
 void Led::setupLed() {
   pinMode(REDLED, OUTPUT);
   pinMode(YELLOWLED, OUTPUT);
@@ -25,6 +27,14 @@ void Led::setTreshGreen(float temp) {
 void Led::setTemp(float temp) {
   this->temperature = temp;
 }
+
+float Led::getTreshGreen(){
+  return this->treshGreen;
+};
+
+float Led::getTreshRed(){
+  return this->treshRed;
+};
 
 
 void Led::updateLed() {

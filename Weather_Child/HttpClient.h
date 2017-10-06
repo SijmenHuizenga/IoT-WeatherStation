@@ -7,6 +7,16 @@
 #define SENDHUMID
 #define SENDBRIGHTNESS
 
+enum NetClientStatus { NET_CONNETING, NET_RECEIVING, NET_WAITING };
+enum NetRequestType {REGISTER, LOGIN, SENDDATA};
+
+extern NetClientStatus clientstate;
+extern NetRequestType requesttypestate;
+
+extern IPAddress gatewayIp;
+
+void updateHttpClient();
+
 void sendWeatherToGateway();
 
 void loginToGateway();
