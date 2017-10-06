@@ -2,6 +2,10 @@
 #include "Led.h"
 #include "Debug.h"
 #include "Sensors.h"
+#include <EEPROM.h>
+
+#define LEDEEPROMADRESSR 150
+#define LEDEEPROMADRESSG 180
 
 Led* led = new Led();
 
@@ -12,14 +16,31 @@ void Led::setupLed() {
   digitalWrite(REDLED, LOW);
   digitalWrite(YELLOWLED, LOW);
   digitalWrite(GREENLED, LOW);
+
+  EEPROM.get(LEDEEPROMADRESSR, this->treshRed);
+  EEPROM.get(LEDEEPROMADRESSG, this->treshGreen);
+
+  if(this->treshRed < 0 || this->treshRed > 100 || this->treshGreen < 0 || this->treshGreen > 100){
+    debugln(F("Read tresholds from eeprom. Values are invalid. Setting to default"), LED);
+    this->setTreshGreen(18);
+    this->setTreshRed(23);
+  }else{
+    debug(F("Read tresholds from eeprom. Values are "), LED);
+    bebug(this->getTreshGreen(), LED);
+    bebug(" => ", LED);
+    bebugln(this->getTreshRed(), LED);
+  }
+
 }
 
 void Led::setTreshRed(float temp) {
+  EEPROM.put(LEDEEPROMADRESSR, temp);
   this->treshRed = temp;
 }
 
 
 void Led::setTreshGreen(float temp) {
+  EEPROM.put(LEDEEPROMADRESSG, temp);
   this->treshGreen = temp;
 }
 
@@ -28,11 +49,11 @@ void Led::setTemp(float temp) {
   this->temperature = temp;
 }
 
-float Led::getTreshGreen(){
+float Led::getTreshGreen() {
   return this->treshGreen;
 };
 
-float Led::getTreshRed(){
+float Led::getTreshRed() {
   return this->treshRed;
 };
 

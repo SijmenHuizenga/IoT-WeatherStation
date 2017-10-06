@@ -18,25 +18,22 @@ TimedAction *updateHttpClientTimer = new TimedAction();
 TimedAction *updateHttpServerTimer = new TimedAction();
 
 void setup() {
-  led->setTreshGreen(23.5);
-  led->setTreshRed(24.8);
-
   startDebugging();
   setupSensors();
   setupButton();
   connectNetwork();
   loginToGateway();
-    led->setupLed();
-    startHttpServer();
+  led->setupLed();
+  startHttpServer();
 
   sendWeatherDataTimer->setDelay(5000);
   sendWeatherDataTimer->setCallback(sendWeatherToGateway);
 
   updateHttpClientTimer->setDelay(250);
-    updateHttpClientTimer->setCallback(updateHttpClient);
+  updateHttpClientTimer->setCallback(updateHttpClient);
 
-    updateHttpServerTimer->setDelay(240);
-    updateHttpServerTimer->setCallback(updateHttpServer);
+  updateHttpServerTimer->setDelay(240);
+  updateHttpServerTimer->setCallback(updateHttpServer);
 
   updateLedsTimer->setDelay(400);
   updateLedsTimer->setCallback(updateLedCallback);
@@ -47,7 +44,7 @@ void loop() {
   updateHttpClientTimer->update();
   sendWeatherDataTimer->update();
   updateLedsTimer->update();
-    updateHttpServerTimer->update();
+  updateHttpServerTimer->update();
 }
 
 void updateLedCallback() {

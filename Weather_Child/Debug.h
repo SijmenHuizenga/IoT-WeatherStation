@@ -1,7 +1,7 @@
 #pragma once
-//#define DEBUGWEBCLIENT
-//#define DEBUGSENSOR
-//#define DEBUGLED
+#define DEBUGWEBCLIENT
+#define DEBUGSENSOR
+#define DEBUGLED
 #define DEBUGWEBSERVER
 
 #include <Arduino.h>
@@ -48,13 +48,13 @@ void debug(T message, DebugType type, bool printnl, bool printprefix) {
       break;
 #endif
 #ifdef DEBUGWEBSERVER
-      case WEBSERVER:
-          if (printprefix)
-              Serial.print(F("[SER] "));
-          Serial.print(message);
-          if (printnl)
-              Serial.println();
-          break;
+    case WEBSERVER:
+      if (printprefix)
+        Serial.print(F("[SER] "));
+      Serial.print(message);
+      if (printnl)
+        Serial.println();
+      break;
 #endif
   }
 }

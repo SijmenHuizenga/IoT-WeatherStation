@@ -44,8 +44,8 @@ void clearBuffer(char *buffer, int size) {
 }
 
 bool startsWith(char *line, const char *needle) {
-  for(int i = 0; needle[i] != 0; i++){
-    if(line[i] != needle[i])
+  for (int i = 0; needle[i] != 0; i++) {
+    if (line[i] != needle[i])
       return false;
   }
   return true;

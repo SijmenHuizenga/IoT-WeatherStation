@@ -35,20 +35,20 @@ byte readIdFromJson(char* line) {
   }
 }
 
-float makeFloatFromRange(char* line, Range range){
+float makeFloatFromRange(char* line, Range range) {
   float out = 0;
 
   int i = range.start;
   int dot = -1;
   while (i <= range.end) {
-    if(line[i] == '.'){
+    if (line[i] == '.') {
       dot = i;
       i++;
     }
-    if(dot == -1)
+    if (dot == -1)
       out = out * 10 + (line[i] - 48);
     else
-      out += ((float)(line[i] - 48))/((float)pow(10, (i-dot)));
+      out += ((float)(line[i] - 48)) / ((float)pow(10, (i - dot)));
     i++;
   }
   return out;
@@ -81,7 +81,7 @@ Range findJsonFieldRange(char* json, char* field) {
   jsoni++;
 
   //skip all whitespaces : to get to the value.
-  while (json[jsoni] == ' ' || json[jsoni] == '\t' || json[jsoni] == ':')
+  while (json[jsoni] == ' ' || json[jsoni] == '\t' || json[jsoni] == ':' || json[jsoni] == '\n' || json[jsoni] == '\r')
     jsoni++;
 
   int valueBegin = jsoni;

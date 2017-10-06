@@ -20,11 +20,11 @@ unsigned long serverTime = 0;
 unsigned long serverTimeSync = 0;
 
 void updateHttpClient() {
-    if (clientstate == NET_RECEIVING) {
-        clientReceiveAndClose();
-    } else if (clientstate == NET_CONNETING) {
-        clientConnectAndSend();
-    }
+  if (clientstate == NET_RECEIVING) {
+    clientReceiveAndClose();
+  } else if (clientstate == NET_CONNETING) {
+    clientConnectAndSend();
+  }
 }
 
 void sendWeatherToGateway(void) {
@@ -155,15 +155,15 @@ void clientReceiveAndClose() {
         handleBodyPart(lineBuffer);
       } else {
         int code = getHttpStatusCode(lineBuffer);
-        if (code != -1){
+        if (code != -1) {
           responseStatusCode = code;
-            debug(F("Status code: "), WEBCLIENT);
-            bebugln(code, WEBCLIENT);
+          debug(F("Status code: "), WEBCLIENT);
+          bebugln(code, WEBCLIENT);
         }
       }
 
-        clearBuffer(lineBuffer, charBufferCount);
-        charBufferCount = 0;
+      clearBuffer(lineBuffer, charBufferCount);
+      charBufferCount = 0;
     }
   }
   if (charBufferCount > 0)
