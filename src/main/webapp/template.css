@@ -1,0 +1,24 @@
+.childrow {
+    border: 1px solid;
+    border-radius: 3px;
+}
+.chart {
+    width: 100%;
+    min-height: 450px;
+}
+
+#slider12c {
+    width: 100%;
+}
+
+#slider12c .slider-track-high {
+    background: green;
+}
+
+#slider12c .slider-track-low {
+    background: red;
+}
+
+#slider12c .slider-selection {
+    background: yellow;
+}

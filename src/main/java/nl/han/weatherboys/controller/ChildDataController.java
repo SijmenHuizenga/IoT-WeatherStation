@@ -9,10 +9,7 @@ import nl.han.weatherboys.dto.ErrorResponse;
 import nl.han.weatherboys.storage.model.Child;
 import nl.han.weatherboys.storage.repo.ChildRepo;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import static nl.han.weatherboys.dto.ErrorResponse.emberallert;
 
@@ -32,6 +29,7 @@ public class ChildDataController {
             @ApiResponse(code=200, message = "OK", response = Child.class, responseContainer = "List"),
     })
     @RequestMapping(method = RequestMethod.GET, value = "/child")
+    @CrossOrigin
     public ResponseEntity<Iterable<Child>> getAllChildren() {
         return ResponseEntity.ok().body(childRepo.findAll());
     }
@@ -42,6 +40,7 @@ public class ChildDataController {
             @ApiResponse(code=200, message = "OK", response = Child.class),
     })
     @RequestMapping(method = RequestMethod.GET, value = "/child/{id}")
+    @CrossOrigin
     public ResponseEntity getAllChildren(@PathVariable("id") String id) {
         Child child = childRepo.findOne(Integer.parseInt(id));
         if(child == null)
