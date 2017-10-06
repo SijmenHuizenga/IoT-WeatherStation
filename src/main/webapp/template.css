@@ -7,18 +7,18 @@
     min-height: 450px;
 }
 
-#slider12c {
-    width: 100%;
+.slider.slider-horizontal {
+    width: 100% !important;
 }
 
-#slider12c .slider-track-high {
-    background: green;
+.slider-track-high {
+    background: red !important;
 }
 
-#slider12c .slider-track-low {
-    background: red;
+.slider-track-low {
+    background: green !important;
 }
 
-#slider12c .slider-selection {
-    background: yellow;
+.slider-selection {
+    background: yellow !important;
 }

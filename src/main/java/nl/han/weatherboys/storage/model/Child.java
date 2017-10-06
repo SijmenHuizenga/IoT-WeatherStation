@@ -22,22 +22,22 @@ public class Child {
     public String ip;
 
     @ApiModelProperty(notes = "All brightness measurements received from this child.", required = true, position = 1)
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "child")
+    @OneToMany(mappedBy = "child")
     @OrderBy("moment")
     public Set<Brightness> brightnesses;
 
     @ApiModelProperty(notes = "All humiditie measurements received from this child.", required = true, position = 1)
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "child")
+    @OneToMany(mappedBy = "child")
     @OrderBy("moment")
     public Set<Humidity> humidities;
 
     @ApiModelProperty(notes = "All pressure measurements received from this child.", required = true, position = 1)
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "child")
+    @OneToMany(mappedBy = "child")
     @OrderBy("moment")
     public Set<Pressure> pressures;
 
     @ApiModelProperty(notes = "All temperature measurements received from this child.", required = true, position = 1)
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "child")
+    @OneToMany(mappedBy = "child")
     @OrderBy("moment")
     public Set<Temperature> temperatures;
 

@@ -1,43 +1,33 @@
-google.charts.load('current', {'packages':['corechart']});
-google.charts.setOnLoadCallback(drawChart);
+class Orphanidge extends React.Component {
 
-function drawNewChart(id, data, options) {
-    var chart = new google.visualization.LineChart(document.getElementById(id));
-
-    chart.draw(data, options);
-
-    function resize(){
-        chart.draw(data, options);
+    constructor(props) {
+        super(props);
+        this.state = { children: []};
     }
 
-    if (window.addEventListener)
-        window.addEventListener('resize', resize);
-    else
-        window.attachEvent('onresize', resize);
+    componentDidMount() {
+        let _this = this;
+        this.serverRequest =
+            axios.get("/child")
+                .then(function(result) {
+                    _this.setState({
+                        children: result.data
+                    });
+                })
+    }
+
+    componentWillUnmount() {
+        this.serverRequest.abort();
+    }
+
+    render(){
+        return <div>
+            {this.state.children.map(function(child, i){
+                return <ChildPanel id={child.id} ip={child.ip} name={child.name} key={i}/>;
+            })}
+        </div>
+    }
 }
 
-function drawChart() {
-    var data = google.visualization.arrayToDataTable([
-        ['Year', 'Sales', 'Expenses'],
-        ['2004', 1000, 400],
-        ['2005', 1170, 460],
-        ['2006', 660, 1120],
-        ['2007', 1030, 540]
-    ]);
-
-    var options = {
-        title: 'Company Performance',
-        curveType: 'function',
-        legend: {position: 'bottom'}
-    };
-
-    drawNewChart('c1', data, options);
-    drawNewChart('c2', data, options);
-    drawNewChart('c3', data, options);
-    drawNewChart('c4', data, options);
-
-
-    var sliderC = new Slider("#ex12c", { id: "slider12c", min: 0, max: 100, range: true, value: [15, 25] });
-
-}
+ReactDOM.render(<Orphanidge/>, document.getElementById('reactroot'));
 

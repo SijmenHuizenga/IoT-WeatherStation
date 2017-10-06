@@ -11,6 +11,8 @@ import nl.han.weatherboys.storage.repo.ChildRepo;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collections;
+
 import static nl.han.weatherboys.dto.ErrorResponse.emberallert;
 
 @RestController
@@ -23,15 +25,22 @@ public class ChildDataController {
         this.childRepo = childRepo;
     }
 
-    @ApiOperation(value = "All children data", notes = "Get all data from all children data available in the gateway " +
-            "including all meaurement data.")
+    @ApiOperation(value = "All children data", notes = "Get info of all children available in the gateway without measurement data.")
     @ApiResponses({
             @ApiResponse(code=200, message = "OK", response = Child.class, responseContainer = "List"),
     })
     @RequestMapping(method = RequestMethod.GET, value = "/child")
     @CrossOrigin
     public ResponseEntity<Iterable<Child>> getAllChildren() {
-        return ResponseEntity.ok().body(childRepo.findAll());
+        Iterable<Child> all = childRepo.findAll();
+        for (Child child : all) {
+            child.brightnesses = Collections.emptySet();
+            child.humidities = Collections.emptySet();
+            child.pressures = Collections.emptySet();
+            child.temperatures = Collections.emptySet();
+        }
+
+        return ResponseEntity.ok().body(all);
     }
 
     @ApiOperation(value = "single child data", notes = "Get the data from one child in the gateway by it's id including" +
