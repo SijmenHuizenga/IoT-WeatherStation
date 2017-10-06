@@ -18,11 +18,11 @@ Week 4:
 
 Week 5:
 - [x] Arduino gebruiken als http server om settings te ontvangen.
-- [ ] Temperatuurgrenzen configurabel maken via gateway. Vanaf gateway requestje naar arduino en daar dingen opslaan.
+- [x] Temperatuurgrenzen configurabel maken via gateway. Vanaf gateway requestje naar arduino en daar dingen opslaan.
 - [ ] Gateway deployment op Pi met docker
 
 Week 6:
-- [ ] Gateway gegevens/grafiek opvragen
+- [x] Gateway gegevens/grafiek opvragen
 - [ ] Temperatuurmeter eiken
 - [x] Tijdsyncrhonisatie; Arduino vraagt aan gateway de huidge tijd op bij startup. De gateway vraagt dit weer op aan de jorgvisch-api. De arduino houdt dan lokaal de tijd bij om de tijd te gebruiken bij verzenden. Dus ook extra veld meesturen naar gateway met timestamp.
 
