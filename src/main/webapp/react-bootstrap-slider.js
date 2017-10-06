@@ -7,12 +7,7 @@ class ReactBootstrapSlider extends React.Component {
     }
 
     componentDidMount() {
-        let that = this;
-        let sliderAttributes = {
-            ...this.props,
-        };
-
-        this.mySlider = new Slider(this.node, sliderAttributes);
+        this.mySlider = new Slider(this.node, this.props);
 
         if (this.props.slideStop) {
             this.mySlider.on("slideStop", this.props.slideStop);

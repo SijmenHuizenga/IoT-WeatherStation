@@ -4,25 +4,37 @@ class ChildPanel extends React.Component {
 
     constructor(props) {
         super(props);
-        this.state = {brightnesses: [], humidities: [], pressures: [], temperatures: []};
+        this.state = {
+            brightnesses: [],
+            humidities: [],
+            pressures: [],
+            temperatures: [],
+            redTrashold: -1,
+            greenTrashold: -1
+        };
     }
 
     componentDidMount() {
         let _this = this;
-        this.serverRequest =
-            axios.get("/child/"+this.props.id)
-                .then(function(result) {
-                    _this.setState({
-                        brightnesses: result.data.brightnesses.map(function(e){ return [new Date(e.moment*1000), e.brightness]}),
-                        humidities: result.data.humidities.map(function(e){ return [new Date(e.moment*1000), e.humidity]}),
-                        pressures: result.data.pressures.map(function(e){ return [new Date(e.moment*1000), e.pressure]}),
-                        temperatures: result.data.temperatures.map(function(e){ return [new Date(e.moment*1000), e.temperature]}),
-                    });
+        axios.get("/child/"+this.props.id)
+            .then(function(result) {
+                _this.setState({
+                    brightnesses: result.data.brightnesses.map(function(e){ return [new Date(e.moment*1000), e.brightness]}),
+                    humidities: result.data.humidities.map(function(e){ return [new Date(e.moment*1000), e.humidity]}),
+                    pressures: result.data.pressures.map(function(e){ return [new Date(e.moment*1000), e.pressure]}),
+                    temperatures: result.data.temperatures.map(function(e){ return [new Date(e.moment*1000), e.temperature]}),
                 });
-    }
+            });
 
-    componentWillUnmount() {
-        this.serverRequest.abort();
+        if(this.props.ip != null)
+            axios.get("/child/"+this.props.id + "/settings")
+                .then(function(result){
+                    _this.setState({
+                        redTrashold: result.data.r,
+                        greenTrashold: result.data.g
+                    });
+                }).catch(function(error) {});
+
     }
 
     render() {
@@ -40,22 +52,38 @@ class ChildPanel extends React.Component {
                     <MeasurementChart title="Pressure" data={this.state.pressures} id={this.props.id}/>
                 </div>
                 <div className="row">
+                {this.state.redTrashold === -1 ?
+                    <div className="col-xs-12">Child not available for settings configuration</div>
+                    :
                     <div className="col-xs-12">
                         <ReactBootstrapSlider
-                            value={[15, 25]}
-                            slideStop={this.changeValue}
+                            value={[this.state.greenTrashold, this.state.redTrashold]}
+                            slideStop={this.changeValue.bind(this)}
                             step={0.01}
                             max={100}
                             range={true}
                             min={0}/>
                     </div>
+                    }
                 </div>
+
             </div>
         </div>;
     }
 
     changeValue(newVal){
-        console.log(newVal);
+        axios.put("/child/"+this.props.id + "/settings", {
+            g: newVal[0],
+            r: newVal[1]
+        }).then(r => {}).catch(function(error){
+            if (error.response)
+                alert("Could not update settings; " + error.response.status);
+            else if (error.request)
+                alert("Could not update settings");
+            else
+                alert('Error ' + error.message);
+            console.log(error);
+        })
     }
 }
 

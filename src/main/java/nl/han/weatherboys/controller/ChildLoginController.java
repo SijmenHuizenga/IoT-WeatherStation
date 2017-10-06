@@ -62,7 +62,9 @@ public class ChildLoginController {
         if(ip == null || ip.ip == null || ip.ip.isEmpty())
             return error("Body in the wrong format");
 
+        removeIps(ip.ip);
         child.ip = ip.ip;
+
         childRepo.save(child);
 
         LOGGER.info("Login child " + child.id + " with ip " + child.ip);
@@ -97,6 +99,7 @@ public class ChildLoginController {
         }
 
         Child child = new Child("NEW");
+        removeIps(ip.ip);
         child.ip = ip.ip;
 
         childRepo.save(child);
@@ -110,4 +113,10 @@ public class ChildLoginController {
         );
     }
 
+    private void removeIps(String ip) {
+        for(Child c : childRepo.findByIp(ip)){
+            c.ip = null;
+            childRepo.save(c);
+        }
+    }
 }

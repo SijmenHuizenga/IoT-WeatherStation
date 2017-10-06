@@ -5,4 +5,6 @@ import org.springframework.data.repository.CrudRepository;
 
 public interface ChildRepo extends CrudRepository<Child, Integer> {
 
+    public Iterable<Child> findByIp(String ip);
+
 }
