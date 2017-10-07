@@ -19,7 +19,7 @@ Week 4:
 Week 5:
 - [x] Arduino gebruiken als http server om settings te ontvangen.
 - [x] Temperatuurgrenzen configurabel maken via gateway. Vanaf gateway requestje naar arduino en daar dingen opslaan.
-- [ ] Gateway deployment op Pi met docker
+- [x] Gateway deployment op Pi met docker
 
 Week 6:
 - [x] Gateway gegevens/grafiek opvragen
