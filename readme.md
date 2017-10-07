@@ -1,4 +1,5 @@
-[![docker badge](https://img.shields.io/badge/docker%20image-available-brightgreen.svg)](https://hub.docker.com/r/sijmenhuizenga/iotweathergateway/)
+[![docker badge](https://img.shields.io/badge/docker%20image-available-brightgreen.svg)](https://hub.docker.com/r/sijmenhuizenga/iotweathergateway)
+[![traivs badge](https://img.shields.io/travis/SijmenHuizenga/IoT-WeatherStation/gateway.svg)](https://travis-ci.org/SijmenHuizenga/IoT-WeatherStation)
 
 # Weather System Gateway
 This gateway is the central link in the weahter network. Measurements from children are stored in this gateawy and the data is forwarded to the jorgapi. This gateway als has a dashboard to display measurements and control children settings.
