@@ -35,11 +35,6 @@ public class JorgApiRequestTest {
     }
 
     @Test
-    public void makeStringStamp() throws Exception {
-        Assert.assertEquals("2017-09-19T11:29:44.0000000+02", my.makeStringStamp(1505813384L));
-    }
-
-    @Test
     public void handleErrorResponseOk() throws Exception {
         my.handleErrorResponse(200, new JSONObject("{}"));
     }
