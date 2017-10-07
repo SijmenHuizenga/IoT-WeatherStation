@@ -1,0 +1,12 @@
+language: java
+
+script:
+  - mvn test -Dmaven.javadoc.skip=true
+
+cache:
+  directories:
+    - '$HOME/.m2/repository'
+
+branches:
+  only:
+  - gateway

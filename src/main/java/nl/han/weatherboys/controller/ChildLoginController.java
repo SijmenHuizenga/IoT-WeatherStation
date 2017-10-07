@@ -103,7 +103,7 @@ public class ChildLoginController {
         child.ip = ip.ip;
 
         childRepo.save(child);
-        child.name = "N" + child.id;
+        child.name = (child.id + "00000").substring(0, 5);
         childRepo.save(child);
 
         LOGGER.info("Registered new child " + child.id + " with ip " + child.ip);

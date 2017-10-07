@@ -10,8 +10,10 @@ import nl.han.weatherboys.storage.repo.JorgApiCredentialRepo;
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
 import org.junit.Before;
+import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.junit.runners.MethodSorters;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
@@ -40,6 +42,7 @@ import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppC
 @ContextConfiguration(
         classes = {JpaConfig.class},
         loader = AnnotationConfigWebContextLoader.class)
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class FullWalkthroughTest {
 
     private MockMvc mockMvc;
@@ -67,7 +70,7 @@ public class FullWalkthroughTest {
      * 6. Get current time
      */
     @Test
-    public void testEverything() throws Exception {
+    public void test1Everything() throws Exception {
 
         int childid = registerchild();
 
@@ -82,23 +85,7 @@ public class FullWalkthroughTest {
                 .andDo(mvcResult -> System.out.println(mvcResult.getResponse().getContentAsString()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].id").value(childid))
-                .andExpect(jsonPath("$[0].ip").value("192.168.178.0.1"))
-
-                .andExpect(jsonPath("$[0].brightnesses[0].moment").value(50L))
-                .andExpect(jsonPath("$[0].brightnesses[0].brightness").value(30f))
-                .andExpect(jsonPath("$[0].brightnesses[1].moment").value(70L))
-                .andExpect(jsonPath("$[0].brightnesses[1].brightness").value(30.5f))
-
-                .andExpect(jsonPath("$[0].humidities[0].moment").value(50f))
-                .andExpect(jsonPath("$[0].humidities[0].humidity").value(50.0f))
-                .andExpect(jsonPath("$[0].humidities[1].moment").value(60f))
-                .andExpect(jsonPath("$[0].humidities[1].humidity").value(50.0f))
-
-                .andExpect(jsonPath("$[0].pressures[0].pressure").value(20f))
-                .andExpect(jsonPath("$[0].pressures[1].pressure").value(23.3f))
-
-                .andExpect(jsonPath("$[0].temperatures[0].temperature").value(23f))
-                .andExpect(jsonPath("$[0].temperatures[1].temperature").value(23.9f));
+                .andExpect(jsonPath("$[0].ip").value("192.168.178.0.1"));
 
         mockMvc.perform(
                 post("/child/" + childid + "/login")
@@ -106,14 +93,32 @@ public class FullWalkthroughTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
+                .andDo(mvcResult -> System.out.println(mvcResult.getResponse().getContentAsString()))
                 .andExpect(jsonPath("$.id").value(childid));
 
         mockMvc.perform(
                 get("/child/" + childid)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
+                .andDo(mvcResult -> System.out.println(mvcResult.getResponse().getContentAsString()))
                 .andExpect(jsonPath("$.id").value(childid))
-                .andExpect(jsonPath("$.ip").value("192.168.178.0.5"));
+                .andExpect(jsonPath("$.ip").value("192.168.178.0.5"))
+
+                .andExpect(jsonPath("$.brightnesses[0].moment").value(50L))
+                .andExpect(jsonPath("$.brightnesses[0].brightness").value(30f))
+                .andExpect(jsonPath("$.brightnesses[1].moment").value(70L))
+                .andExpect(jsonPath("$.brightnesses[1].brightness").value(30.5f))
+
+                .andExpect(jsonPath("$.humidities[0].moment").value(50f))
+                .andExpect(jsonPath("$.humidities[0].humidity").value(50.0f))
+                .andExpect(jsonPath("$.humidities[1].moment").value(60f))
+                .andExpect(jsonPath("$.humidities[1].humidity").value(50.0f))
+
+                .andExpect(jsonPath("$.pressures[0].pressure").value(20f))
+                .andExpect(jsonPath("$.pressures[1].pressure").value(23.3f))
+
+                .andExpect(jsonPath("$.temperatures[0].temperature").value(23f))
+                .andExpect(jsonPath("$.temperatures[1].temperature").value(23.9f));;
 
         mockMvc.perform(
                 get("/time/now")
@@ -124,7 +129,7 @@ public class FullWalkthroughTest {
     }
 
     @Test
-    public void testBadMeasurementData() throws Exception {
+    public void test2BadMeasurementData() throws Exception {
         int childid = registerchild();
 
         long realtime = System.currentTimeMillis()/1000L;
