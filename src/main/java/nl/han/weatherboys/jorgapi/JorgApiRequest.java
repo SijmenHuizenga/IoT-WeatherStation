@@ -2,11 +2,14 @@ package nl.han.weatherboys.jorgapi;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.springframework.format.datetime.standard.TemporalAccessorParser;
 
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.ZoneId;
 import java.util.Calendar;
+import java.util.TimeZone;
 
 abstract class JorgApiRequest {
 
@@ -74,6 +77,7 @@ abstract class JorgApiRequest {
     String makeStringStamp(long timestamp){
         Calendar c = Calendar.getInstance();
         c.setTimeInMillis(timestamp*1000L);
+        c.setTimeZone(TimeZone.getTimeZone("GMT"));
         return TIMESTAMP_FORMAT_OUT.format(c.getTime());
     }
 
