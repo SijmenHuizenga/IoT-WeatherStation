@@ -4,21 +4,23 @@
 #include "Network.h"
 #include "HttpClient.h"
 
-#ifdef ETHERNETSHIELDv2
-void connectEthernet(void) {
-  while (1) {
-    if (Ethernet.begin(myMac, myIp))
-      break;
-    debugln(F("Starting ethernet failed. Retrying..."), WEBCLIENT);
-    delay(1000);
-  }
-}
-#else
+//#define STATICIP
+
+#ifdef STATICIP
 IPAddress myIp(192, 168, 178, 78);
 byte myMac[] = {0x00, 0xAA, 0xBB, 0xCC, 0xDA, 0x02};
 
 void connectNetwork(void) {
   Ethernet.begin(myMac, myIp);
+}
+#else
+void connectNetwork(void) {
+  while (1) {
+    if (Ethernet.begin())
+      break;
+    debugln(F("Starting ethernet failed. Retrying..."), WEBCLIENT);
+    delay(1000);
+  }
 }
 #endif
 
