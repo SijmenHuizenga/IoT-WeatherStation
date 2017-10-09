@@ -1,32 +1,29 @@
 #include "Button.h"
 #include "HttpClient.h"
-int buttonState;
-int lastButtonState = LOW;
 
-unsigned long lastDebounceTime = 0;
-unsigned long debounceDelay = 50;
+Button* resetButton = new Button();
 
-void setupButton() {
+void Button::setupButton() {
   pinMode(BUTTONPIN, INPUT_PULLUP);
 }
 
-void readButton() {
+void Button::readButton() {
   int reading = digitalRead(BUTTONPIN);
-  if (reading != lastButtonState) {
-    lastDebounceTime = millis();
+  if (reading != this->lastButtonState) {
+    this->lastDebounceTime = millis();
   }
-  if ((millis() - lastDebounceTime) > debounceDelay) {
+  if ((millis() - this->lastDebounceTime) > this->debounceDelay) {
     if (reading != buttonState) {
-      buttonState = reading;
+      this->buttonState = reading;
       if (buttonState == LOW) {
-        buttonAction();
+        this->buttonAction();
       }
     }
   }
-  lastButtonState = reading;
+  this->lastButtonState = reading;
 }
 
-void buttonAction() {
-  resetChildID();
+void Button::buttonAction() {
+  httpClient->resetChildID();
 }
 

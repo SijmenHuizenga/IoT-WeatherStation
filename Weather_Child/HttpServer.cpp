@@ -7,21 +7,20 @@
 
 EthernetServer server(80);
 
-HttpServerRequestType requestType;
-int contentLength = 0;
+ChildHttpServer* httpServer = new ChildHttpServer();
 
-void startHttpServer() {
+void ChildHttpServer::startHttpServer() {
   server.begin();
 }
 
-void updateHttpServer() {
+void ChildHttpServer::updateHttpServer() {
   EthernetClient client = server.available();
   if (client) {
     debugln("client connected", WEBSERVER);
     char *lineBuffer = (char *) calloc(READBUFFERSIZSE + 1,  sizeof(char));
 
-    contentLength = 0;
-    requestType = UNKOWN;
+    this->contentLength = 0;
+    this->requestType = UNKOWN;
 
     unsigned int charBufferCount = 0;
     while (client.connected()) {
@@ -37,32 +36,32 @@ void updateHttpServer() {
             //now we arrived in the body (or the end)
             break;
           } else {
-            processRequestPart(lineBuffer);
+            this->processRequestPart(lineBuffer);
           }
 
-          clearBuffer(lineBuffer, charBufferCount);
+          network->clearBuffer(lineBuffer, charBufferCount);
           charBufferCount = 0;
         }
       }
     }
     if (contentLength > READBUFFERSIZSE) {
       debugln(F("Content length bigger than READBUFFERSIZE"), WEBSERVER);
-      sendBadRequestResponse(client);
-    } else if (contentLength == 0) {
-      sendResponse(client, NULL);
+      this->sendBadRequestResponse(client);
+    } else if (this->contentLength == 0) {
+      this->sendResponse(client, NULL);
     } else {
-      clearBuffer(lineBuffer, charBufferCount);
+      network->clearBuffer(lineBuffer, charBufferCount);
       charBufferCount = 0;
       while (client.connected()) {
         if (client.available()) {
           char c = client.read();
           lineBuffer[charBufferCount] = c;
           charBufferCount++;
-          if (charBufferCount == contentLength)
+          if (charBufferCount == this->contentLength)
             break;
         }
       }
-      sendResponse(client, lineBuffer);
+      this->sendResponse(client, lineBuffer);
     }
 
     free(lineBuffer);
@@ -73,38 +72,38 @@ void updateHttpServer() {
   }
 }
 
-void processRequestPart(char* buffer) {
-  if (startsWith(buffer, "GET /ping"))
-    requestType = PING;
-  else if (startsWith(buffer, "GET /settings"))
-    requestType = GETSETTINGS;
-  else if (startsWith(buffer, "PUT /settings"))
-    requestType = PUTSETTINGS;
-  else if (startsWith(buffer, "Content-Length:")) {
-    contentLength = 0;
+void ChildHttpServer::processRequestPart(char* buffer) {
+  if (network->startsWith(buffer, "GET /ping"))
+    this->requestType = PING;
+  else if (network->startsWith(buffer, "GET /settings"))
+    this->requestType = GETSETTINGS;
+  else if (network->startsWith(buffer, "PUT /settings"))
+    this->requestType = PUTSETTINGS;
+  else if (network->startsWith(buffer, "Content-Length:")) {
+    this->contentLength = 0;
     for (int i = 15; buffer[i] != 0 && buffer[i] != '\r'; i++) {
       if (buffer[i] == ' ')
         continue;
-      contentLength = contentLength * 10 + (buffer[i] - 48);
+      this->contentLength = this->contentLength * 10 + (buffer[i] - 48);
     }
   }
 }
 
-void sendResponse(EthernetClient client, char* body) {
-  if (requestType == PING && body == NULL) {
+void ChildHttpServer::sendResponse(EthernetClient client, char* body) {
+  if (this->requestType == PING && body == NULL) {
     debugln(F("Ping / Pong"), WEBSERVER);
-    sendOkResponse(client);
+    this->sendOkResponse(client);
   } else if (requestType == GETSETTINGS && body == NULL)
-    sendGetSettingsResponse(client);
+    this->sendGetSettingsResponse(client);
   else if (requestType == PUTSETTINGS && body != NULL)
-    sendPutSettingsResponse(client, body);
+    this->sendPutSettingsResponse(client, body);
   else{
     debugln(F("Unknown request"), WEBSERVER);
-    sendBadRequestResponse(client);
+    this->sendBadRequestResponse(client);
   }
 }
 
-void sendOkResponse(EthernetClient client) {
+void ChildHttpServer::sendOkResponse(EthernetClient client) {
   client.println("HTTP/1.1 200 OK");
   client.println("Content-Type: application/json");
   client.println("Content-Length: 16");
@@ -114,20 +113,20 @@ void sendOkResponse(EthernetClient client) {
 }
 
 //body format like: { "g": 0, "r": 0 }
-void sendPutSettingsResponse(EthernetClient client, char* body) {
+void ChildHttpServer::sendPutSettingsResponse(EthernetClient client, char* body) {
   debugln(body, WEBSERVER);
-  Range gRange = findJsonFieldRange(body, "\"g\"");
-  Range rRange = findJsonFieldRange(body, "\"r\"");
+  Range gRange = jsonController->findJsonFieldRange(body, "\"g\"");
+  Range rRange = jsonController->findJsonFieldRange(body, "\"r\"");
   if (&gRange == &NULLRANGER || &rRange == &NULLRANGER) {
     debugln(F("g or r not found in json body"), WEBSERVER);
-    sendBadRequestResponse(client);
+    this->sendBadRequestResponse(client);
   } else {
-    float newGreen = makeFloatFromRange(body, gRange);
-    float newRed = makeFloatFromRange(body, rRange);
+    float newGreen = jsonController->makeFloatFromRange(body, gRange);
+    float newRed = jsonController->makeFloatFromRange(body, rRange);
 
     if (newGreen > 100 || newRed > 100 || newGreen >= newRed) {
       debugln(F("g or r not in range or are equal"), WEBSERVER);
-      sendBadRequestResponse(client);
+      this->sendBadRequestResponse(client);
       return;
     }
     led->setTreshGreen(newGreen);
@@ -138,11 +137,11 @@ void sendPutSettingsResponse(EthernetClient client, char* body) {
     bebug(F(" Red "), WEBSERVER);
     bebugln(newRed, WEBSERVER);
 
-    sendOkResponse(client);
+    this->sendOkResponse(client);
   }
 }
 
-void sendGetSettingsResponse(EthernetClient client) {
+void ChildHttpServer::sendGetSettingsResponse(EthernetClient client) {
   String body = "{\"g\":";
   body.concat(led->getTreshGreen());
   body.concat(",\"r\":");
@@ -161,7 +160,7 @@ void sendGetSettingsResponse(EthernetClient client) {
   client.print(body);
 }
 
-void sendBadRequestResponse(EthernetClient client) {
+void ChildHttpServer::sendBadRequestResponse(EthernetClient client) {
   debugln(F("Bad Request"), WEBSERVER);
   client.println("HTTP/1.1 400 BAD REQUEST");
   client.println("Connection: close");

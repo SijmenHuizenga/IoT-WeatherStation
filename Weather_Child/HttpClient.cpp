@@ -5,81 +5,74 @@
 #include "Sensors.h"
 #include "HttpClient.h"
 #include "Json.h"
-#include <EEPROM.h>;
+#include <EEPROM.h>
 #include <Arduino.h>
 
-EthernetClient client;
+IPAddress gatewayIp(192, 168, 178, 66);
+ChildHttpClient* httpClient = new ChildHttpClient();
 
-IPAddress gatewayIp(192, 168, 178, 55);
-NetClientStatus clientstate = NET_WAITING;
-NetRequestType requesttypestate;
-int responseStatusCode = -1;
-
-int childID = -1;
-unsigned long serverTime = 0;
-unsigned long serverTimeSync = 0;
-
-void updateHttpClient() {
-  if (clientstate == NET_RECEIVING) {
-    clientReceiveAndClose();
-  } else if (clientstate == NET_CONNETING) {
-    clientConnectAndSend();
+void ChildHttpClient::updateHttpClient() {
+  if (this->clientstate == NET_RECEIVING) {
+    this->clientReceiveAndClose();
+  } else if (this->clientstate == NET_CONNETING) {
+    this->clientConnectAndSend();
   }
 }
 
-void sendWeatherToGateway(void) {
-  if (childID != -1 && serverTime != 0 && clientstate == NET_WAITING) {
-    clientstate = NET_CONNETING;
-    requesttypestate = SENDDATA;
+void ChildHttpClient::sendWeatherToGateway(void) {
+  if (this->childID != -1 && this->serverTime != 0 && this->clientstate == NET_WAITING) {
+    this->clientstate = NET_CONNETING;
+    this->requesttypestate = SENDDATA;
   }
 }
 
-void clientConnectAndSend() {
-  if (client.connect(gatewayIp, 8080)) {
-    switch (requesttypestate) {
+void ChildHttpClient::clientConnectAndSend() {
+  if (this->client.connect(gatewayIp, 80)) {
+    switch (this->requesttypestate) {
       case REGISTER:
-        sendRegister();
+        this->sendRegister();
         break;
       case LOGIN:
-        sendLogin();
+        this->sendLogin();
         break;
       case SENDDATA:
-        sendWeather();
+        this->sendWeather();
         break;
     }
-    clientstate = NET_RECEIVING;
-    responseStatusCode = -1;
+    this->clientstate = NET_RECEIVING;
+    this->responseStatusCode = -1;
   } else
     debugln(F("connection failed"), WEBCLIENT);
 }
 
-void sendWeather() {
+void ChildHttpClient::sendWeather() {
   String body = "{";
 #ifdef SENDHUMID
   body.concat("\"humidity\": ");
-  body.concat(getHumidity());
+  body.concat(sensors->getHumidity());
 #endif
 #ifdef SENDTEMP
   body.concat(",\"temperature\": ");
-  body.concat(getTemperature());
+  body.concat(sensors->getTemperature());
 #endif
 #ifdef SENDBRIGHTNESS
   body.concat(",\"brightness\": ");
-  body.concat(getBrightness() / 10);
+  body.concat(sensors->getBrightness() / 10);
 #endif
   body.concat(",\"timestamp\": ");
   body.concat(getTime());
   body.concat("}");
 
-  sendWeatherHeader(body.length()); //todo: static body length?
+  this->sendWeatherHeader(body.length()); //todo: static body length?
+  debug(F("Sent body: "), WEBCLIENT);
+  debug(body, WEBCLIENT, true, false);
   client.println(body);
 
-  debug(F("Sent body: "), WEBCLIENT);
-  bebugln(body, WEBCLIENT);
+  
 }
 
-void sendWeatherHeader(unsigned int bodyLength) {
-  client.println("PUT /child/" + String(childID) + "/measurements HTTP/1.1");
+void ChildHttpClient::sendWeatherHeader(unsigned int bodyLength) {
+  client.println("PUT /child/" + String(this->childID) + "/measurements HTTP/1.1");
   client.println("Host: 192.168.178.55:8080");
   client.println("Content-Type: application/json");
   client.print("Content-Length: ");
@@ -88,35 +81,35 @@ void sendWeatherHeader(unsigned int bodyLength) {
   client.println();
 }
 
-void loginToGateway() {
+void ChildHttpClient::loginToGateway() {
   int eepromid = EEPROM.read(0);
   if (eepromid > 0) {
     debugln("eepromid =" + (String) eepromid, WEBCLIENT);
-    childID = eepromid;
-    requesttypestate = LOGIN;
+    this->childID = eepromid;
+    this->requesttypestate = LOGIN;
   } else {
-    requesttypestate = REGISTER;
+    this->requesttypestate = REGISTER;
   }
-  clientstate = NET_CONNETING;
+  this->clientstate = NET_CONNETING;
 }
 
-void sendLogin() {
+void ChildHttpClient::sendLogin() {
   client.print(F("POST /child/"));
-  client.print(String(childID));
+  client.print(String(this->childID));
   client.println(F("/login HTTP/1.1"));
-  debugln("POST /child/" + String(childID) + "/login HTTP/1.1", WEBCLIENT);
-  sendLoginRegisterThings();
+  debugln("POST /child/" + String(this->childID) + "/login HTTP/1.1", WEBCLIENT);
+  this->sendLoginRegisterThings();
 }
 
-void sendRegister() {
+void ChildHttpClient::sendRegister() {
   client.println(F("POST /child/register HTTP/1.1"));
   debugln(F("POST /child/register HTTP/1.1"), WEBCLIENT);
-  sendLoginRegisterThings();
+  this->sendLoginRegisterThings();
 }
 
-void sendLoginRegisterThings() {
+void ChildHttpClient::sendLoginRegisterThings() {
   String body = "{";
-  body = body + "\"ip\": \"" + getIpAddress(Ethernet.localIP());
+  body = body + "\"ip\": \"" + network->getIpAddress(Ethernet.localIP());
   body = body + "\"}";
 
   client.println(F("Host: 192.168.178.55:8080"));
@@ -130,7 +123,7 @@ void sendLoginRegisterThings() {
   debugln(body, WEBCLIENT);
 }
 
-void clientReceiveAndClose() {
+void ChildHttpClient::clientReceiveAndClose() {
   unsigned int charBufferCount = 0;
 
   //one char extra as termination byte
@@ -152,118 +145,118 @@ void clientReceiveAndClose() {
       }
 
       if (inBody) {
-        handleBodyPart(lineBuffer);
+        this->handleBodyPart(lineBuffer);
       } else {
-        int code = getHttpStatusCode(lineBuffer);
+        int code = network->getHttpStatusCode(lineBuffer);
         if (code != -1) {
-          responseStatusCode = code;
+          this->responseStatusCode = code;
           debug(F("Status code: "), WEBCLIENT);
           bebugln(code, WEBCLIENT);
         }
       }
 
-      clearBuffer(lineBuffer, charBufferCount);
+      network->clearBuffer(lineBuffer, charBufferCount);
       charBufferCount = 0;
     }
   }
   if (charBufferCount > 0)
-    handleBodyPart(lineBuffer);
+    this->handleBodyPart(lineBuffer);
   free(lineBuffer);
 
   if (clientstate == NET_RECEIVING && !client.connected()) {
     debugln("disconnecting.", WEBCLIENT);
-    client.stop();
-    clientstate = NET_WAITING;
+    this->client.stop();
+    this->clientstate = NET_WAITING;
   }
 }
 
-void handleBodyPart(char *lineBuffer) {
-  switch (requesttypestate) {
+void ChildHttpClient::handleBodyPart(char *lineBuffer) {
+  switch (this->requesttypestate) {
     case REGISTER:
-      readRegisterResponseLine(lineBuffer);
+      this->readRegisterResponseLine(lineBuffer);
       break;
     case LOGIN:
-      readLoginResponseLine(lineBuffer);
+      this->readLoginResponseLine(lineBuffer);
       break;
     case SENDDATA:
-      readWeatherResponseLine(lineBuffer);
+      this->readWeatherResponseLine(lineBuffer);
       break;
   }
 }
 
-void readRegisterResponseLine(char *lineBuffer) {
-  if (responseStatusCode != 200) {
-    logAndRetry(lineBuffer);
+void ChildHttpClient::readRegisterResponseLine(char *lineBuffer) {
+  if (this->responseStatusCode != 200) {
+    this->logAndRetry(lineBuffer);
     return;
   }
 
   if (lineBuffer[0] == '{') {
-    byte id = readIdFromJson(lineBuffer);
+    byte id = jsonController->readIdFromJson(lineBuffer);
     debugln(id, WEBCLIENT);
     if (id > 0) {
       EEPROM.write(0, id);
-      childID = id;
+      this->childID = id;
       debug(F("ONTVANGEN ID:"), WEBCLIENT);
       bebugln(id, WEBCLIENT);
     } else {
-      logAndRetry(lineBuffer);
+      this->logAndRetry(lineBuffer);
       return;
     }
 
-    unsigned long ti = readTimeFromJson(lineBuffer);
+    unsigned long ti = jsonController->readTimeFromJson(lineBuffer);
 
-    requesttypestate = LOGIN;
-    handleTimePartOfLoginRegisterResponse(lineBuffer);
+    this->requesttypestate = LOGIN;
+    this->handleTimePartOfLoginRegisterResponse(lineBuffer);
   }
 }
 
-void readLoginResponseLine(char *lineBuffer) {
-  if (responseStatusCode != 200) {
-    logAndRetry(lineBuffer);
+void ChildHttpClient::readLoginResponseLine(char *lineBuffer) {
+  if (this->responseStatusCode != 200) {
+    this->logAndRetry(lineBuffer);
     return;
   }
   if (lineBuffer[0] == '{') {
-    handleTimePartOfLoginRegisterResponse(lineBuffer);
+    this->handleTimePartOfLoginRegisterResponse(lineBuffer);
   }
 }
 
-void logAndRetry(char* lineBuffer) {
+void ChildHttpClient::logAndRetry(char* lineBuffer) {
   debugln(lineBuffer, WEBCLIENT);
   debugln(F("Login/Register failed, retrying"), WEBCLIENT);
-  client.stop();
-  clientstate = NET_CONNETING;
+  this->client.stop();
+  this->clientstate = NET_CONNETING;
 }
 
-void handleTimePartOfLoginRegisterResponse(char* lineBuffer) {
-  unsigned long ti = readTimeFromJson(lineBuffer);
+void ChildHttpClient::handleTimePartOfLoginRegisterResponse(char* lineBuffer) {
+  unsigned long ti = jsonController->readTimeFromJson(lineBuffer);
   debug(F("ONTVANGEN TIJD:"), WEBCLIENT);
   bebugln(ti, WEBCLIENT);
   if (ti < 1) {
-    logAndRetry(lineBuffer);
+    this->logAndRetry(lineBuffer);
   } else {
-    serverTime = ti;
-    serverTimeSync = millis();
+    this->serverTime = ti;
+    this->serverTimeSync = millis();
   }
 }
 
-void readWeatherResponseLine(char *lineBuffer) {
-  if (responseStatusCode != 200)
+void ChildHttpClient::readWeatherResponseLine(char *lineBuffer) {
+  if (this->responseStatusCode != 200)
     debugln(lineBuffer, WEBCLIENT);
 }
 
-unsigned long getTime() {
-  return serverTime + ((millis() - serverTimeSync) / 1000);
+unsigned long ChildHttpClient::getTime() {
+  return this->serverTime + ((millis() - this->serverTimeSync) / 1000);
 }
 
-void resetChildID() {
+void ChildHttpClient::resetChildID() {
   EEPROM.write(0, 0);
   debugln(F("Child ID has been reset, requesting new."), WEBCLIENT);
   client.stop();
-  clientstate = NET_CONNETING;
-  requesttypestate = REGISTER;
+  this->clientstate = NET_CONNETING;
+  this->requesttypestate = REGISTER;
 
-  childID = -1;
-  serverTime = 0;
-  serverTimeSync = 0;
+  this->childID = -1;
+  this->serverTime = 0;
+  this->serverTimeSync = 0;
 }
 

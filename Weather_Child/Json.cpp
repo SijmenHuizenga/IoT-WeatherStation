@@ -1,8 +1,10 @@
 #include "Json.h"
 #include "Debug.h"
 
-unsigned long readTimeFromJson(char* line) {
-  Range timeRange = findJsonFieldRange(line, "\"time\"");
+Json* jsonController = new Json();
+
+unsigned long Json::readTimeFromJson(char* line) {
+  Range timeRange = this->findJsonFieldRange(line, "\"time\"");
   if (&timeRange == &NULLRANGER) {
     debugln(F("Could not find time in following line"), WEBCLIENT);
     debugln(line, WEBCLIENT);
@@ -17,8 +19,8 @@ unsigned long readTimeFromJson(char* line) {
   }
 }
 
-byte readIdFromJson(char* line) {
-  Range idRange = findJsonFieldRange(line, "\"id\"");
+byte Json::readIdFromJson(char* line) {
+  Range idRange = this->findJsonFieldRange(line, "\"id\"");
 
   if (&idRange == &NULLRANGER) {
     debugln(F("Could not find id in following line"), WEBCLIENT);
@@ -35,7 +37,7 @@ byte readIdFromJson(char* line) {
   }
 }
 
-float makeFloatFromRange(char* line, Range range) {
+float Json::makeFloatFromRange(char* line, Range range) {
   float out = 0;
 
   int i = range.start;
@@ -60,7 +62,7 @@ float makeFloatFromRange(char* line, Range range) {
 // json           {"id": 417}
 // response       {7,9}
 // String values are returned excluding their surrounding "
-Range findJsonFieldRange(char* json, char* field) {
+Range Json::findJsonFieldRange(char* json, char* field) {
   int jsoni = 0;
   int fieldi = 0;
 

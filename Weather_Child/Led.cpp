@@ -20,7 +20,7 @@ void Led::setupLed() {
   EEPROM.get(LEDEEPROMADRESSR, this->treshRed);
   EEPROM.get(LEDEEPROMADRESSG, this->treshGreen);
 
-  if(this->treshRed < 0 || this->treshRed > 100 || this->treshGreen < 0 || this->treshGreen > 100){
+  if(this->treshRed < 0 || this->treshRed > 100 || this->treshGreen < 0 || this->treshGreen > 100 || this->treshRed <= this->treshGreen || isnan(this->treshGreen) || isnan(this->treshRed)){
     debugln(F("Read tresholds from eeprom. Values are invalid. Setting to default"), LED);
     this->setTreshGreen(18);
     this->setTreshRed(23);
@@ -59,7 +59,7 @@ float Led::getTreshRed() {
 
 
 void Led::updateLed() {
-  setTemp(getTemperature());
+  setTemp(sensors->getTemperature());
 
   byte ledOn = 0;
 

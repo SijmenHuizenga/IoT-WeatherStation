@@ -5,8 +5,14 @@
 
 #define TEMPCALIBRATION -1
 
+class Sensors {
+private:
 
-void setupSensors(void);
-float getHumidity(void);
-float getTemperature(void);
-float getBrightness(void);
+public:
+    void setupSensors(void);
+    float getHumidity(void);
+    float getTemperature(void);
+    float getBrightness(void);
+};
+
+extern Sensors *sensors;

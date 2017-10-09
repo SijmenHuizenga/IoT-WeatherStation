@@ -4,27 +4,28 @@
 // static for now
 Weather sensor;
 
+Sensors* sensors = new Sensors();
 
-void setupSensors(void) {
+void Sensors::setupSensors(void) {
   sensor.begin();
   debugln(F("Sensors started"), SENSOR);
 }
 
-float getHumidity(void) {
+float Sensors::getHumidity(void) {
   float data = sensor.getRH();
   debugln(data, SENSOR);
   return data;
 
 }
 
-float getTemperature(void) {
+float Sensors::getTemperature(void) {
   float data = sensor.getTemp() + TEMPCALIBRATION;
   debugln(data, SENSOR);
   return data;
 }
 
 
-float getBrightness(void) {
+float Sensors::getBrightness(void) {
   float data = analogRead(A0);
   debugln(data, SENSOR);
   return data;

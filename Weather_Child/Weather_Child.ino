@@ -11,7 +11,6 @@
 
 #define ETHERNETSHIELDv2
 
-
 TimedAction *sendWeatherDataTimer = new TimedAction();
 TimedAction *updateLedsTimer = new TimedAction();
 TimedAction *updateHttpClientTimer = new TimedAction();
@@ -19,36 +18,48 @@ TimedAction *updateHttpServerTimer = new TimedAction();
 
 void setup() {
   startDebugging();
-  setupSensors();
-  setupButton();
-  connectNetwork();
-  loginToGateway();
+  sensors->setupSensors();
+  resetButton->setupButton();
+  network->connectNetwork();
+  httpClient->loginToGateway();
   led->setupLed();
-  startHttpServer();
+  httpServer->startHttpServer();
 
   sendWeatherDataTimer->setDelay(5000);
-  sendWeatherDataTimer->setCallback(sendWeatherToGateway);
+  sendWeatherDataTimer->setCallback(callSendWeatherToGateway);
 
   updateHttpClientTimer->setDelay(250);
-  updateHttpClientTimer->setCallback(updateHttpClient);
+  updateHttpClientTimer->setCallback(callUpdateHttpClient);
 
   updateHttpServerTimer->setDelay(240);
-  updateHttpServerTimer->setCallback(updateHttpServer);
+  updateHttpServerTimer->setCallback(callUpdateHttpServer);
 
   updateLedsTimer->setDelay(400);
-  updateLedsTimer->setCallback(updateLedCallback);
+  updateLedsTimer->setCallback(callUpdateLed);
 }
 
 void loop() {
-  readButton();
+  resetButton->readButton();
   updateHttpClientTimer->update();
   sendWeatherDataTimer->update();
   updateLedsTimer->update();
   updateHttpServerTimer->update();
 }
 
-void updateLedCallback() {
+void callUpdateLed() {
   led->updateLed();
+}
+
+void callSendWeatherToGateway() {
+  httpClient->sendWeatherToGateway();
+}
+
+void callUpdateHttpClient() {
+  httpClient->updateHttpClient();
+}
+
+void callUpdateHttpServer() {
+  httpServer->updateHttpServer();
 }
 
 int freeRam() {
