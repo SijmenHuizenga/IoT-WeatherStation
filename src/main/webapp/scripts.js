@@ -22,6 +22,7 @@ class Orphanidge extends React.Component {
 
     render(){
         return <div>
+            <SettingsPannel/>
             {this.state.children.map(function(child, i){
                 return <ChildPanel id={child.id} ip={child.ip} name={child.name} key={i}/>;
             })}

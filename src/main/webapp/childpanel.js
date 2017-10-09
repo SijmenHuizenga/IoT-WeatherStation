@@ -40,33 +40,37 @@ class ChildPanel extends React.Component {
     render() {
         return <div className="panel panel-default">
             <div className="panel-heading">
-                <h3 className="panel-title" style={{float: "left"}}>{this.props.name} ({this.props.id})</h3>
+                <a data-toggle="collapse" href={"#collapse"+this.props.id} className="panel-title" >
+                    <h3 className="panel-title" style={{float: "left"}}>{this.props.name} ({this.props.id})</h3>
+                </a>
+
                 <span className="text-muted" style={{float: "right"}}>{this.props.ip}</span>
                 <div style={{clear: "both"}} />
             </div>
-            <div className="panel-body">
-                <div className="row">
-                    <MeasurementChart title="Brightness" data={this.state.brightnesses} id={this.props.id}/>
-                    <MeasurementChart title="Temperature" data={this.state.temperatures} id={this.props.id}/>
-                    <MeasurementChart title="Humidity" data={this.state.humidities} id={this.props.id}/>
-                    <MeasurementChart title="Pressure" data={this.state.pressures} id={this.props.id}/>
-                </div>
-                <div className="row">
-                {this.state.redTrashold === -1 ?
-                    <div className="col-xs-12">Child not available for settings configuration</div>
-                    :
-                    <div className="col-xs-12">
-                        <ReactBootstrapSlider
-                            value={[this.state.greenTrashold, this.state.redTrashold]}
-                            slideStop={this.changeValue.bind(this)}
-                            step={0.01}
-                            max={100}
-                            range={true}
-                            min={0}/>
+            <div id={"collapse"+this.props.id} className="panel-collapse collapse in">
+                <div className="panel-body">
+                    <div className="row">
+                        <MeasurementChart title="Brightness" data={this.state.brightnesses} id={this.props.id}/>
+                        <MeasurementChart title="Temperature" data={this.state.temperatures} id={this.props.id}/>
+                        <MeasurementChart title="Humidity" data={this.state.humidities} id={this.props.id}/>
+                        <MeasurementChart title="Pressure" data={this.state.pressures} id={this.props.id}/>
                     </div>
-                    }
+                    <div className="row">
+                    {this.state.redTrashold === -1 ?
+                        <div className="col-xs-12">Child not available for settings configuration</div>
+                        :
+                        <div className="col-xs-12">
+                            <ReactBootstrapSlider
+                                value={[this.state.greenTrashold, this.state.redTrashold]}
+                                slideStop={this.changeValue.bind(this)}
+                                step={0.01}
+                                max={100}
+                                range={true}
+                                min={0}/>
+                        </div>
+                        }
+                    </div>
                 </div>
-
             </div>
         </div>;
     }
