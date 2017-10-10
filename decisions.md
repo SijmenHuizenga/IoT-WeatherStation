@@ -1,5 +1,4 @@
-# key design decisions of this project
-
+# Gateway Design Decisions
 
 ### Java + Spring
 The decision to use Java+Spring over other platforms like ASP.NET or Python+Django is based on the following arguments:
@@ -24,4 +23,15 @@ The first simple way is to make a single table to store all measurements. This t
  * timestamp
 This way it is super simple to add new measurement types. This could even be done without changing code. The downside is that implementing custom business rules for specific measurement types much more difficult is.
  
-The second better option is to create a single table and entity for every type of measurement. The downside is that there will be a lot of small tables, but the upside is that it is much easier to have custom things like measurements with multiple values. 
+The second better option is to create a single table and entity for every type of measurement. The downside is that there will be a lot of small tables, but the upside is that it is much easier to have custom things like measurements with multiple values.
+
+### Standalone React as Dashboard platform
+For the gateway dashboard platform there are only a few requirements:
+* The platform must support some kind of live refresh. The data will be loaded asynchonious from some different rest endpoints. The platform must be able to render the data as it comes in without lots of coding by the developers.
+* At least one of the developers must have some knowledge of the platform. The goal of this assignment is not to learn a new frontend web platform, so a plaform that can be used to do some quick development is required.
+* It sould not be needed to compile the javascript/html/css code to run in the webbrowser. Compiling of js code adds cool features, but it makes setting up your development environment more dificult. This dashboard must be simple and quick developed, so compiling code is not prefered.
+
+The platform that fits all these requirements is [React](https://reactjs.org/)+[Babel standalone](https://github.com/babel/babel-standalone):
+* React always renders the current state. When new data is stored in this 'state' than it will be rendered by React.
+* Sijmen has some experience with React.
+* Using babel standalone, JSX code that is required for React can be used without compiling the js beforehand.
