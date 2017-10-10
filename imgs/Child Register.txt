@@ -1,0 +1,9 @@
+# rendered using www.websequencediagrams.com
+title Child Register
+
+Child->+Gateway: Register (ip)
+note right of Gateway: Gateway registers child ip with new id
+Gateway->JorgApi: Login (username, password)
+Gateway->JorgApi: Get Time
+Gateway->-Child: ok+id+timestamp
+note left of Child: Stores id in eeprom

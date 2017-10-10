@@ -1,0 +1,9 @@
+# rendered using www.websequencediagrams.com
+title Child Login
+
+Child->+Gateway: Login (ip+id)
+note right of Gateway: Check if child is valid
+note right of Gateway: Store new ip
+Gateway->JorgApi: Login (username, password)
+Gateway->JorgApi: Get Time
+Gateway->-Child: ok+timestamp

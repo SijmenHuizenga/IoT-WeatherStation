@@ -1,0 +1,8 @@
+# rendered using www.websequencediagrams.com
+title Child Put Measurements
+
+Child->+Gateway: Measurements (temperature, etc..)
+note right of Gateway: Store measurements
+Gateway->JorgApi: Login (username, password)
+Gateway->JorgApi: Put Measurments
+Gateway->-Child: ok

@@ -1,0 +1,9 @@
+# rendered using www.websequencediagrams.com
+title Put Settings of Child
+
+Dashboard->Gateway: Update settings of Child
+note right of Gateway: Gateay get latest known ip of child from db 
+Gateway->+Child: Put settings
+note right of Child: Store setting in EEPROM
+Child->-Gateway: Ok
+Gateway->Dashboard: Ok
