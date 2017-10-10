@@ -25,9 +25,15 @@ Week 6:
 - [x] Gateway gegevens/grafiek opvragen
 - [ ] Temperatuurmeter eiken
 - [x] Tijdsyncrhonisatie; Arduino vraagt aan gateway de huidge tijd op bij startup. De gateway vraagt dit weer op aan de jorgvisch-api. De arduino houdt dan lokaal de tijd bij om de tijd te gebruiken bij verzenden. Dus ook extra veld meesturen naar gateway met timestamp.
+- [ ] Voorpagina uitleg schrijven (waar is wat te vinden?)
+- [ ] Tutorial Arduino Setup schrijven (how to install arduino?)
 
-
+extra's:
 - [x] Knopje toevoegen voor ID resetten
+- [x] Thresholds met knopjes in de gateway dashboard aanpassen
+- [ ] Birth: Interactieve serial uitleg voor opzetten child
+
+ideeen voor later:
 * DNS Server
 * Data opnieuw versturen naar Jorg als dat niet lukt
 * Authenticatie tussen Child en Gateway

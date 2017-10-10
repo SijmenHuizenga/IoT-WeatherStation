@@ -11,7 +11,7 @@ This weather system measures environment weather data from multiple cihld weathe
 The childs are built using arduino's with networking shields and many sensors. The exact data that these childs are able to record are specified in the chapter Measurements.
 
 An overview of the system is shown in the below image:
-![Overview](https://github.com/SijmenHuizenga/IoT-WeatherStation/raw/master/Architectural-overview-diagram.png)
+![Overview](imgs/Architectural-overview-diagram.png)
 
 ## System flow
 
