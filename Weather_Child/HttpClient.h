@@ -5,7 +5,7 @@
 #include "Sensors.h"
 #include "HttpClient.h"
 #include "Json.h"
-#include <EEPROM.h>;
+#include <EEPROM.h>
 #include <Arduino.h>
 #define SENDTEMP
 #define SENDHUMID

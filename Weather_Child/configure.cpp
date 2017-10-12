@@ -139,7 +139,7 @@ void Configure::receiveMac() {
         if(error) {
             Serial.println(F("Invalid mac address please retry"));
             for(int i = 0; i < 12; i++) {
-                receivedMac[i] = NULL;
+                receivedMac[i] = 0;
             }
             counter=0;
             error = false;

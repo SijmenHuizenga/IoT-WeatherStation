@@ -13,21 +13,21 @@
 
 class Configure {
 private:
-    void Configure::receiveMac();
-    void Configure::receiveIP();
-    byte Configure::hexToByte(char char1, char char2);
-    void Configure::writeMacToEeprom(byte mac1, byte mac2, byte mac3, byte mac4, byte mac5, byte mac6);
-    void Configure::writeIpToEeprom(byte ip);
-    bool Configure::hasMac();
-    bool Configure::hasGatewayIP();
+    void receiveMac();
+    void receiveIP();
+    byte hexToByte(char char1, char char2);
+    void writeMacToEeprom(byte mac1, byte mac2, byte mac3, byte mac4, byte mac5, byte mac6);
+    void writeIpToEeprom(byte ip);
+    bool hasMac();
+    bool hasGatewayIP();
 public:
     byte mac[6];
     byte ip;
-    void Configure::configureChild();
-    void Configure::writeIdToEeprom(int id);
-    byte Configure::readMac(int byte);
-    bool Configure::hasID();
-    int Configure::readID();
+    void configureChild();
+    void writeIdToEeprom(int id);
+    byte readMac(int byte);
+    bool hasID();
+    int readID();
 };
 
 extern Configure *conf;

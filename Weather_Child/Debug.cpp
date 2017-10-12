@@ -1,4 +1,3 @@
-#pragma once
 #include "Debug.h"
 #include <Arduino.h>
 

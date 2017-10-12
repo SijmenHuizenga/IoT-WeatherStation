@@ -1,5 +1,3 @@
-#pragma once
-
 #include "Network.h"
 #include "Sensors.h"
 #include "Button.h"
