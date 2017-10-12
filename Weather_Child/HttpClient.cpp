@@ -256,17 +256,15 @@ void ChildHttpClient::resetChildID() {
 
 void printFloatTo5CharString(EthernetClient client, float f){
   if(f >= 100){
-    client.print(F("100.0"));   //100.0
-    return;
+    // 100-999/10 = 10-99
+    client.print(String(f, 1));  //100.0
   }else if(f >= 10){
-    //10.50
+    client.print(String(f, 2));  //10.50
   }else if(f >= 0) {
-    client.print(F("0"));      //01.50
+    client.print(String(f, 3));  //1.000
   }else if(f > -10){
-    //-5.40
-  }else if(f > -100){  // -99.9
-    client.print(String(f, 1));
-    return;
+    client.print(String(f, 2));  //-5.40
+  }else if(f > -100){
+    client.print(String(f, 1));  //-99.9
   }
-  client.print(String(f, 2));
 }

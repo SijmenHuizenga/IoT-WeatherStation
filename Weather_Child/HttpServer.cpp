@@ -99,8 +99,7 @@ void ChildHttpServer::sendResponse(EthernetClient client, char* body) {
   else if (requestType == PUTSETTINGS && body != NULL)
     this->sendPutSettingsResponse(client, body);
   else{
-    debugln(F("Unknown request"), WEBSERVER);
-    this->sendBadRequestResponse(client);
+    this->sendNotFoundResponse(client);
   }
 }
 
@@ -160,7 +159,14 @@ void ChildHttpServer::sendGetSettingsResponse(EthernetClient client) {
 
 void ChildHttpServer::sendBadRequestResponse(EthernetClient client) {
   debugln(F("Bad Request"), WEBSERVER);
-  client.println("HTTP/1.1 400 BAD REQUEST");
-  client.println("Connection: close");
+  client.println(F("HTTP/1.1 400 BAD REQUEST"));
+  client.println(F("Connection: close"));
   client.println();
+}
+
+void ChildHttpServer::sendNotFoundResponse(EthernetClient client) {
+    debugln(F("NotFound Request"), WEBSERVER);
+    client.println(F("HTTP/1.1 404 NOT FOUND"));
+    client.println(F("Connection: close"));
+    client.println();
 }

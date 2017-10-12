@@ -17,6 +17,7 @@ class ChildHttpServer {
     void sendPutSettingsResponse(EthernetClient client, char* body);
     void sendGetSettingsResponse(EthernetClient client);
     void sendBadRequestResponse(EthernetClient client);
+    void sendNotFoundResponse(EthernetClient client);
 };
 
 extern ChildHttpServer *httpServer;
