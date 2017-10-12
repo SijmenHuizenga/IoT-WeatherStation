@@ -8,15 +8,13 @@
 #include "HttpServer.h"
 #include "configure.h"
 
-#define ETHERNETSHIELDv2
-
 TimedAction *sendWeatherDataTimer = new TimedAction();
 TimedAction *updateLedsTimer = new TimedAction();
 TimedAction *updateHttpClientTimer = new TimedAction();
 TimedAction *updateHttpServerTimer = new TimedAction();
 
 void setup() {
-  startDebugging();
+  Serial.begin(9600);
   conf->configureChild();
   sensors->setupSensors();
   led->setupLed();

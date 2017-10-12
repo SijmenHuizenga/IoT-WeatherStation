@@ -18,15 +18,6 @@ void Configure::configureChild() {
             this->mac[i] = EEPROM.read(MACBYTE1+i);
         }
         this->ip = EEPROM.read(GATEWAYIP);
-        debug(F("The mac address is: "), CONF);
-        for(int i = 0; i < 5; i++) {
-            bebug(String(this->mac[i], HEX), CONF);
-            bebug(F(":"), CONF);
-        }
-        bebugln(String(this->mac[5], HEX), CONF);
-        debug("The gateway IP address is: 192.168.178.", CONF);
-        bebugln(this->ip, CONF);
-
         return;
     }
 

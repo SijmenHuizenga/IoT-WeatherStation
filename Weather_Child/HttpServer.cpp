@@ -16,7 +16,6 @@ void ChildHttpServer::startHttpServer() {
 void ChildHttpServer::updateHttpServer() {
   EthernetClient client = server.available();
   if (client) {
-    debugln("client connected", WEBSERVER);
     char *lineBuffer = (char *) calloc(READBUFFERSIZSE + 1,  sizeof(char));
 
     this->contentLength = 0;
@@ -45,7 +44,6 @@ void ChildHttpServer::updateHttpServer() {
       }
     }
     if (contentLength > READBUFFERSIZSE) {
-      debugln(F("Content length bigger than READBUFFERSIZE"), WEBSERVER);
       this->sendBadRequestResponse(client);
     } else if (this->contentLength == 0) {
       this->sendResponse(client, NULL);
@@ -68,7 +66,6 @@ void ChildHttpServer::updateHttpServer() {
     // give the web browser time to receive the data
     delay(1);
     client.stop();
-    debugln("client disconnected", WEBSERVER);
   }
 }
 
@@ -91,14 +88,12 @@ void ChildHttpServer::processRequestPart(char* buffer) {
 
 void ChildHttpServer::sendResponse(EthernetClient client, char* body) {
   if (this->requestType == PING && body == NULL) {
-    debugln(F("Ping / Pong"), WEBSERVER);
     this->sendOkResponse(client);
   } else if (requestType == GETSETTINGS && body == NULL)
     this->sendGetSettingsResponse(client);
   else if (requestType == PUTSETTINGS && body != NULL)
     this->sendPutSettingsResponse(client, body);
   else{
-    debugln(F("Unknown request"), WEBSERVER);
     this->sendBadRequestResponse(client);
   }
 }
@@ -118,24 +113,18 @@ void ChildHttpServer::sendPutSettingsResponse(EthernetClient client, char* body)
   Range gRange = jsonController->findJsonFieldRange(body, "\"g\"");
   Range rRange = jsonController->findJsonFieldRange(body, "\"r\"");
   if (&gRange == &NULLRANGER || &rRange == &NULLRANGER) {
-    debugln(F("g or r not found in json body"), WEBSERVER);
     this->sendBadRequestResponse(client);
   } else {
     float newGreen = jsonController->makeFloatFromRange(body, gRange);
     float newRed = jsonController->makeFloatFromRange(body, rRange);
 
     if (newGreen > 100 || newRed > 100 || newGreen >= newRed) {
-      debugln(F("g or r not in range or are equal"), WEBSERVER);
       this->sendBadRequestResponse(client);
       return;
     }
     led->setTreshGreen(newGreen);
     led->setTreshRed(newRed);
 
-    debug(F("PutSettingsRequest with data Green "), WEBSERVER);
-    bebug(newGreen, WEBSERVER);
-    bebug(F(" Red "), WEBSERVER);
-    bebugln(newRed, WEBSERVER);
 
     this->sendOkResponse(client);
   }
@@ -148,9 +137,6 @@ void ChildHttpServer::sendGetSettingsResponse(EthernetClient client) {
   body.concat(led->getTreshRed());
   body.concat("}");
 
-  debug(F("Get Settings Request. Response: "), WEBSERVER);
-  debugln(body, WEBSERVER);
-
   client.println("HTTP/1.1 200 OK");
   client.println("Content-Type: application/json");
   client.print("Content-Length: ");
@@ -161,7 +147,6 @@ void ChildHttpServer::sendGetSettingsResponse(EthernetClient client) {
 }
 
 void ChildHttpServer::sendBadRequestResponse(EthernetClient client) {
-  debugln(F("Bad Request"), WEBSERVER);
   client.println("HTTP/1.1 400 BAD REQUEST");
   client.println("Connection: close");
   client.println();

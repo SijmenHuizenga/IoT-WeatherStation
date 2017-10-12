@@ -6,8 +6,6 @@ Json* jsonController = new Json();
 unsigned long Json::readTimeFromJson(char* line) {
   Range timeRange = this->findJsonFieldRange(line, "\"time\"");
   if (&timeRange == &NULLRANGER) {
-    debugln(F("Could not find time in following line"), WEBCLIENT);
-    debugln(line, WEBCLIENT);
     return 0;
   } else {
     unsigned long curTime = 0;
@@ -23,8 +21,6 @@ byte Json::readIdFromJson(char* line) {
   Range idRange = this->findJsonFieldRange(line, "\"id\"");
 
   if (&idRange == &NULLRANGER) {
-    debugln(F("Could not find id in following line"), WEBCLIENT);
-    debugln(line, WEBCLIENT);
     return -1;
   } else {
     byte id = 0;
