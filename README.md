@@ -98,10 +98,11 @@ How to go from an Arduino, an ethernetshield, and a couple of sensors to a weath
 ## Prerequisites
 What code and libraries do you need to make an awesome weatherboys weatherstation.
 
-### Code
+### Code [***available here***](https://github.com/SijmenHuizenga/IoT-WeatherStation/tree/child)
 **ClearArduino**
 
 This program makes sure there is no unwanted values in te EEPROM.
+
 **Weather_Child**
 
 This is the awesome weatherstation code, it does *Everything*.
@@ -115,7 +116,7 @@ This is the library that reads the Si7021 values.
 
 This library is needed for the ethernet shield 2. This code has only been tested on the ethernet shield 2.
 
-## Installation
+## Uploading to the arduino
 
 ### Libraries
 The location of the library folder differs per computer. Find your Arduino IDE installation folder and navigate to the folder named libraries.
@@ -125,5 +126,7 @@ The location of the library folder differs per computer. Find your Arduino IDE i
 **Si7021** Take the folder from `/Libraries/Arduino/` and place it in the library folder.
 
 ### Code
-To install the weatherstation code on the arduino you first need to run the ClearArduino code. After that just upload the Weather_Child code and enjoy your awesome weatherboys weatherstation!
+To install the weatherstation code on the arduino you first need to run the ClearArduino code. 
+
+After that just upload the Weather_Child code and enjoy your awesome weatherboys weatherstation!
 
