@@ -14,9 +14,12 @@ public class ErrorResponse {
         this.message = message;
     }
 
+    //these method is static because it is a helper function that does not reley on fields
+    //and it makes the usage more beautiful.
     public static ResponseEntity<ErrorResponse> error(@NotNull String message){
         return ResponseEntity.badRequest().body(new ErrorResponse(message));
     }
+
 
     public static ResponseEntity<ErrorResponse> emberallert(){
         return ResponseEntity.badRequest().body(new ErrorResponse("EMBER ALLERT! Child not found!"));

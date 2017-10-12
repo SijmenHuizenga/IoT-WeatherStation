@@ -81,7 +81,9 @@ public class ChildSettingsController {
                     () -> Unirest.put("http://" + child.ip + "/settings").body(data).asString()
             );
         } catch (UnirestException e) {
-            LOGGER.info("PUT settings could not reach child ", e);
+            LOGGER.info("PUT settings could not reach child. Removing ip from db", e);
+            child.ip = null;
+            childRepo.save(child);
             return ResponseEntity.status(HttpStatus.GATEWAY_TIMEOUT).body(new ErrorResponse("Could not reach child"));
         }
 
@@ -114,7 +116,9 @@ public class ChildSettingsController {
                     () -> Unirest.get("http://" + child.ip + "/settings").asObject(ChildSettingsData.class)
             );
         } catch (UnirestException e) {
-            LOGGER.info("GET settings could not reach child ", e);
+            LOGGER.info("GET settings could not reach child. Removing ip from repo", e);
+            child.ip = null;
+            childRepo.save(child);
             return ResponseEntity.status(HttpStatus.GATEWAY_TIMEOUT).body(new ErrorResponse("Could not reach child"));
         }
 
@@ -146,7 +150,9 @@ public class ChildSettingsController {
                     () -> Unirest.get("http://" + child.ip + "/ping").asString()
             );
         } catch (UnirestException e) {
-            LOGGER.info("GET ping could not reach child ", e);
+            LOGGER.info("GET ping could not reach child. Unregistering ip from child.", e);
+            child.ip = null;
+            childRepo.save(child);
             return ResponseEntity.status(HttpStatus.GATEWAY_TIMEOUT).body(new ErrorResponse("Could not reach child"));
         }
 
