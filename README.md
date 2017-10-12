@@ -91,3 +91,21 @@ TimedAction* sendWeatherDataTimer = new TimedAction(); <-- Create a timer per ob
 sendWeatherDataTimer->setDelay(5000); <-- set the interval in milliseconds
 sendWeatherDataTimer->setCallback(sendWeatherToGateway); <-- set a funtion to call at the interval.
 ```
+
+# Installation
+How to go from an Arduino, an ethernetshield, and a couple of sensors to a weatherboys weatherstation.
+
+## Prerequisites
+What code and libraries do you need to make an awesome weatherboys weatherstation.
+
+### Code
+**ClearArduino**
+This program makes sure there is no unwanted values in te EEPROM.
+**Weather_Child**
+This is the awesome weatherstation code, it does *Everything*.
+
+### Libraries
+**SparkFun Si7021 Breakout Library** [***Avalable here***](https://github.com/sparkfun/Si7021_Breakout)
+This is the library that reads the Si7021 values.
+**Ethernet2** [***Avalable here***](https://github.com/adafruit/Ethernet2)
+This library is needed for the ethernet shield 2. This code has only been tested on the ethernet shield 2.
