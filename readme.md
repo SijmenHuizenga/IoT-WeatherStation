@@ -5,6 +5,25 @@
 This gateway is the central link in the weahter network. Measurements from children are stored in this gateawy and the data is forwarded to the jorgapi. This gateway als has a dashboard to display measurements and control children settings.
 
 ## Running the Gateway
+Pre-requirement: a running empty mysql database and corresponding username and password. Read [this tutorial]() or use the following docker-compose.yaml configuration to run on raspberry pi with docker:
+
+```
+version: '3'
+services:
+  gatewaystore:
+    image: hypriot/rpi-mysql
+    volumes:
+      - /home/pi/gateway/store:/var/lib/mysql
+    environment:
+      - MYSQL_DATABASE=gatewaydb
+      - MYSQL_USER=[DB USER]
+      - MYSQL_PASSWORD=[DB PASS]
+      - MYSQL_RANDOM_ROOT_PASSWORD=yes
+      - MYSQL_ROOT_PASSWORD=[RANDOM NUMBER]
+    ports:
+      - "3306:3306"
+```
+
 Whatever method you use to run the gateway, you will need a configuration file to link the java application to the mysql database. An example configuraiton file is as follows:
 
 `gateway.properties`
