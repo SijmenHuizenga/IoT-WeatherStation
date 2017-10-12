@@ -2,12 +2,16 @@
 A arduino weather station with gateway. University of Applied Science Arnhem en Nijmegen (HAN): Internet of Things (IoT). This branch contains the code for child arduino's. These childs measure environmental data and sent it to the gateway.
 
 ## Functionalities
+The child has many fancy functionalities. Its primary objective is to measure environmental data (temperature, humidity and brightness) and send it to the [gateway](https://github.com/SijmenHuizenga/IoT-WeatherStation/tree/gateway). 
 
+When the child wakes up (is powered on) it requests an ip address using dhcp. That it registers and logs in as described in the [system flow](https://github.com/SijmenHuizenga/IoT-WeatherStation/tree/master#system-flow). While the child is awake it reads the temperature and updates the leds accordingly. Furthermore exposes the child a rest api that can be used to configure the temperature tresholds for the colored led. This api is described [here](https://github.com/SijmenHuizenga/IoT-WeatherStation/blob/child/api.yaml) and can be viewed using the online [swagger editor](editor.swagger.io).
+
+The child has a single button that resets the child. With a short press only the id is reset. This is usefull for when you want to relocate the child to a different location within the same network. The child will register again at the gateway and receive a new id. All future measurements are sent using this id. A long press (more than 5 seconds) will reset the whole child and requires you to go through [setup again](#settings-setup).
 
 ## Installation
 How to go from an Arduino, an ethernetshield, and a couple of sensors to a weatherboys weatherstation.
 
-### Setup
+### Phisical setup
 First, connect a Ethernet Shield 2 on the Arduion. Than connect the sensors using the following wireing scheme.
 
 ![connection scheme](Child_1_bb.png)
@@ -24,7 +28,7 @@ There are two programs that can be used:
 * **ClearArduino** This program makes sure there is no unwanted values in te EEPROM. Upload and run this program first before uplaoding the primary program.
 * **Weather_Child** This is the awesome weatherstation code, it does *Everything*.
 
-### Setup
+### Settings setup
 To install the weatherstation code on the arduino you first need to run the ClearArduino code. This simple program clears the eeprom from old variables. After that just upload the Weather_Child code. The first time the program is executed on the arduino the serial connection is used to setup some settings. So make sure you have the arduino connected to your computer and a serial port is open. The arduino will guide you through the steps and will ask you to provide some information. This will be self-explanitory. All settings are stored in eeprom so this process should only be executed once.
 
 When everything is configured you can disconnect the serial connection and enjoy your awesome weatherboys weatherstation!
