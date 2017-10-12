@@ -2,7 +2,7 @@
 
 #include <Ethernet2.h>
 
-#define READBUFFERSIZSE 20
+#define READBUFFERSIZSE 40
 
 class Network {
   private:
@@ -17,4 +17,3 @@ class Network {
 };
 
 extern Network *network;
-

@@ -1,9 +1,9 @@
 #pragma once
-//#define DEBUGWEBCLIENT
+#define DEBUGWEBCLIENT
 //#define DEBUGSENSOR
 //#define DEBUGLED
-//#define DEBUGWEBSERVER
-//#define DEBUGCONFIG
+#define DEBUGWEBSERVER
+#define DEBUGCONFIG
 
 #include <Arduino.h>
 

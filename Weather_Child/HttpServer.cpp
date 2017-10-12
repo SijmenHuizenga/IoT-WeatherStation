@@ -1,6 +1,7 @@
 #include "Debug.h"
 #include "Network.h"
 #include "HttpServer.h"
+#include "HttpClient.h"
 #include "Led.h"
 #include "Json.h"
 #include "Ram.h"
@@ -142,22 +143,19 @@ void ChildHttpServer::sendPutSettingsResponse(EthernetClient client, char* body)
 }
 
 void ChildHttpServer::sendGetSettingsResponse(EthernetClient client) {
-  String body = "{\"g\":";
-  body.concat(led->getTreshGreen());
-  body.concat(",\"r\":");
-  body.concat(led->getTreshRed());
-  body.concat("}");
-
-  debug(F("Get Settings Request. Response: "), WEBSERVER);
-  debugln(body, WEBSERVER);
+  debug(F("Get Settings Request."), WEBSERVER);
 
   client.println("HTTP/1.1 200 OK");
   client.println("Content-Type: application/json");
-  client.print("Content-Length: ");
-  client.println(body.length());
+  client.println("Content-Length: 21");
   client.println("Connection: close");
   client.println();
-  client.print(body);
+
+  client.print("{\"g\":"); //5
+  printFloatTo5CharString(client, led->getTreshGreen()); //5
+  client.print(",\"r\":"); //5
+  printFloatTo5CharString(client, led->getTreshRed()); //5
+  client.println("}"); //1
 }
 
 void ChildHttpServer::sendBadRequestResponse(EthernetClient client) {

@@ -45,37 +45,30 @@ void ChildHttpClient::clientConnectAndSend() {
 }
 
 void ChildHttpClient::sendWeather() {
-  String body = "{";
-#ifdef SENDHUMID
-  body.concat("\"humidity\": ");
-  body.concat(sensors->getHumidity());
-#endif
-#ifdef SENDTEMP
-  body.concat(",\"temperature\": ");
-  body.concat(sensors->getTemperature());
-#endif
-#ifdef SENDBRIGHTNESS
-  body.concat(",\"brightness\": ");
-  body.concat(sensors->getBrightness() / 10);
-#endif
-  body.concat(",\"timestamp\": ");
-  body.concat(getTime());
-  body.concat("}");
+  this->sendWeatherHeader(80);
 
-  this->sendWeatherHeader(body.length()); //todo: static body length?
+  client.print(F("{\"humidity\":")); //11
+  printFloatTo5CharString(client, sensors->getHumidity()); //5
+  client.print(F(",\"temperature\":")); //15
+  printFloatTo5CharString(client, sensors->getTemperature());//5
+  client.print(F(",\"brightness\":"));//14
+  printFloatTo5CharString(client, sensors->getBrightness() / 10);//5
+  client.print(F(",\"timestamp\":"));//13
+  client.print(getTime()); //10
+  client.println(F("}"));//1
+
   debugln(F("sendWeather"), WEBCLIENT);
-  client.println(body);
-
-  
 }
 
 void ChildHttpClient::sendWeatherHeader(unsigned int bodyLength) {
-  client.println("PUT /child/" + String(this->childID) + "/measurements HTTP/1.1");
-  client.println("Host: 192.168.178.55:8080"); // to-do dynamisch maken
-  client.println("Content-Type: application/json");
-  client.print("Content-Length: ");
+  client.print(F("PUT /child/"));
+  client.print(this->childID);
+  client.println(F("/measurements HTTP/1.1"));
+  client.println(F("Host: 192.168.178.55:8080")); // to-do dynamisch maken
+  client.println(F("Content-Type: application/json"));
+  client.print(F("Content-Length: "));
   client.println(bodyLength);
-  client.println("Connection: close");
+  client.println(F("Connection: close"));
   client.println();
 }
 
@@ -108,20 +101,20 @@ void ChildHttpClient::sendRegister() {
 
 void ChildHttpClient::sendLoginRegisterThings() {
   debug(freeRam(), WEBCLIENT);
-  String body = "{";
-  body.concat("\"ip\": \"");
-  body.concat(network->getIpAddress(Ethernet.localIP()));
-  body.concat("\"}");
 
-  client.println(F("Host: 192.168.178.55:8080")); // to-do dynamisch maken
+  client.print(F("Host: 192.168.178."));
+  client.print(conf->ip);
+  client.print(":");
+  client.println(this->gatewayPort);
   client.println(F("Content-Type: application/json"));
-  client.print(F("Content-Length: "));
-  client.println(body.length());
-
+  client.println(F("Content-Length: 25"));
   client.println(F("Connection: close \n"));
-  client.println(body);
 
-  debugln(body, WEBCLIENT);
+  client.print(F("{\"ip\":\"")); // 8
+  client.print(network->getIpAddress(Ethernet.localIP())); //15
+  client.print(F("\"}")); //2
+
+  debugln("sent login/register things", WEBCLIENT);
 }
 
 void ChildHttpClient::clientReceiveAndClose() {
@@ -261,3 +254,19 @@ void ChildHttpClient::resetChildID() {
   this->serverTimeSync = 0;
 }
 
+void printFloatTo5CharString(EthernetClient client, float f){
+  if(f >= 100){
+    client.print(F("100.0"));   //100.0
+    return;
+  }else if(f >= 10){
+    //10.50
+  }else if(f >= 0) {
+    client.print(F("0"));      //01.50
+  }else if(f > -10){
+    //-5.40
+  }else if(f > -100){  // -99.9
+    client.print(String(f, 1));
+    return;
+  }
+  client.print(String(f, 2));
+}

@@ -46,6 +46,8 @@ class ChildHttpClient {
     unsigned long getTime();
 };
 
+void printFloatTo5CharString(EthernetClient client, float f);
+
 extern ChildHttpClient *httpClient;
 
 extern NetClientStatus clientstate;
