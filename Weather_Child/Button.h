@@ -2,6 +2,7 @@
 #include <Arduino.h>
 class Button {
   private:
+    int longPress = 5000;
     int buttonState;
     int lastButtonState = LOW;
     unsigned long lastDebounceTime = 0;

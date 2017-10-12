@@ -4,6 +4,7 @@
 #include "HttpServer.h"
 #include "Led.h"
 #include "Json.h"
+#include "Ram.h"
 
 EthernetServer server(80);
 

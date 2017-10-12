@@ -8,6 +8,7 @@
 #include "Timer.h"
 #include "HttpClient.h"
 #include "HttpServer.h"
+#include "configure.h"
 
 #define ETHERNETSHIELDv2
 
@@ -18,11 +19,12 @@ TimedAction *updateHttpServerTimer = new TimedAction();
 
 void setup() {
   startDebugging();
+  conf->configureChild();
   sensors->setupSensors();
+  led->setupLed();
   resetButton->setupButton();
   network->connectNetwork();
   httpClient->loginToGateway();
-  led->setupLed();
   httpServer->startHttpServer();
 
   sendWeatherDataTimer->setDelay(5000);
@@ -60,10 +62,4 @@ void callUpdateHttpClient() {
 
 void callUpdateHttpServer() {
   httpServer->updateHttpServer();
-}
-
-int freeRam() {
-  extern int __heap_start, *__brkval;
-  int v;
-  return (int) &v - (__brkval == 0 ? (int) &__heap_start : (int) __brkval);
 }

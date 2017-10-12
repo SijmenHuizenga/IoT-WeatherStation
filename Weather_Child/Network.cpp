@@ -3,16 +3,21 @@
 #include "Debug.h"
 #include "Network.h"
 #include "HttpClient.h"
+#include "configure.h"
 
 Network* network = new Network();
 
 void Network::connectNetwork(void) {
+  debugln(F("Setting up network..."), WEBCLIENT);
   while (1) {
-    if (Ethernet.begin())
+    if (Ethernet.begin(conf->mac))
       break;
     debugln(F("Starting ethernet failed. Retrying..."), WEBCLIENT);
     delay(1000);
   }
+  debug("GatewayIP is: ", WEBCLIENT); bebugln(this->gatewayIp, WEBCLIENT);
+  this->gatewayIp = IPAddress(192, 168, 178, (int)conf->ip);
+  debug("Set gatewayIP to: ", WEBCLIENT); bebugln(this->gatewayIp, WEBCLIENT);
 }
 
 

@@ -17,6 +17,7 @@ enum NetRequestType {REGISTER, LOGIN, SENDDATA};
 
 class ChildHttpClient {
   private:
+    int gatewayPort = 80;
     EthernetClient client;    
     int childID = -1;
     unsigned long serverTime = 0;

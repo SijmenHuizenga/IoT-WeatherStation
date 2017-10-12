@@ -4,11 +4,12 @@
 #include "Network.h"
 #include "Sensors.h"
 #include "HttpClient.h"
+#include "configure.h"
 #include "Json.h"
+#include "Ram.h"
 #include <EEPROM.h>
 #include <Arduino.h>
 
-IPAddress gatewayIp(192, 168, 178, 66);
 ChildHttpClient* httpClient = new ChildHttpClient();
 
 void ChildHttpClient::updateHttpClient() {
@@ -27,7 +28,7 @@ void ChildHttpClient::sendWeatherToGateway(void) {
 }
 
 void ChildHttpClient::clientConnectAndSend() {
-  if (this->client.connect(gatewayIp, 80)) {
+  if (this->client.connect(network->gatewayIp, this->gatewayPort)) {
     switch (this->requesttypestate) {
       case REGISTER:
         this->sendRegister();
@@ -64,8 +65,7 @@ void ChildHttpClient::sendWeather() {
   body.concat("}");
 
   this->sendWeatherHeader(body.length()); //todo: static body length?
-  debug(F("Sent body: "), WEBCLIENT);
-  debug(body, WEBCLIENT, true, false);
+  debugln(F("sendWeather"), WEBCLIENT);
   client.println(body);
 
   
@@ -73,7 +73,7 @@ void ChildHttpClient::sendWeather() {
 
 void ChildHttpClient::sendWeatherHeader(unsigned int bodyLength) {
   client.println("PUT /child/" + String(this->childID) + "/measurements HTTP/1.1");
-  client.println("Host: 192.168.178.55:8080");
+  client.println("Host: 192.168.178.55:8080"); // to-do dynamisch maken
   client.println("Content-Type: application/json");
   client.print("Content-Length: ");
   client.println(bodyLength);
@@ -82,6 +82,7 @@ void ChildHttpClient::sendWeatherHeader(unsigned int bodyLength) {
 }
 
 void ChildHttpClient::loginToGateway() {
+  debugln(network->gatewayIp, WEBCLIENT);
   int eepromid = EEPROM.read(0);
   if (eepromid > 0) {
     debugln("eepromid =" + (String) eepromid, WEBCLIENT);
@@ -108,11 +109,13 @@ void ChildHttpClient::sendRegister() {
 }
 
 void ChildHttpClient::sendLoginRegisterThings() {
+  debug(freeRam(), WEBCLIENT);
   String body = "{";
-  body = body + "\"ip\": \"" + network->getIpAddress(Ethernet.localIP());
-  body = body + "\"}";
+  body.concat("\"ip\": \"");
+  body.concat(network->getIpAddress(Ethernet.localIP()));
+  body.concat("\"}");
 
-  client.println(F("Host: 192.168.178.55:8080"));
+  client.println(F("Host: 192.168.178.55:8080")); // to-do dynamisch maken
   client.println(F("Content-Type: application/json"));
   client.print(F("Content-Length: "));
   client.println(body.length());
