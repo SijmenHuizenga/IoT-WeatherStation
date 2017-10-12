@@ -1,5 +1,6 @@
 #include "Button.h"
 #include "HttpClient.h"
+#include "configure.h"
 
 Button* resetButton = new Button();
 
@@ -16,14 +17,28 @@ void Button::readButton() {
     if (reading != buttonState) {
       this->buttonState = reading;
       if (buttonState == LOW) {
-        this->buttonAction();
+        pressed = true;
+      } else {
+          if(pressed) {
+              buttonActionShort();
+          }
+          pressed = false;
       }
     }
   }
+    if((millis() - this->lastDebounceTime) > 5000 && pressed) {
+        pressed = false;
+        buttonActionLong();
+
+    }
   this->lastButtonState = reading;
 }
 
-void Button::buttonAction() {
-  httpClient->resetChildID();
+void Button::buttonActionShort() {
+    Serial.println("resetting ID");
+    //httpClient->resetChildID();
+}
+void Button::buttonActionLong() {
+    conf->abortChild();
 }
 

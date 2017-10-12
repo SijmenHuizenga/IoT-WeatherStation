@@ -2,15 +2,17 @@
 #include <Arduino.h>
 class Button {
   private:
+    bool pressed;
     int longPress = 5000;
-    int buttonState;
-    int lastButtonState = LOW;
+    bool buttonState;
+    bool lastButtonState = false;
     unsigned long lastDebounceTime = 0;
     unsigned long debounceDelay = 50;    
   public:
     void setupButton();
     void readButton();
-    void buttonAction();
+    void buttonActionLong();
+    void buttonActionShort();
 };
 
 extern Button *resetButton;

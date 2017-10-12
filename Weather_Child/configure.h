@@ -28,6 +28,7 @@ public:
     byte readMac(int byte);
     bool hasID();
     int readID();
+    void abortChild();
 };
 
 extern Configure *conf;

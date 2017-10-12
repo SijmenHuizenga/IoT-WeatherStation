@@ -73,7 +73,7 @@ bool Configure::hasMac() {
 }
 
 bool Configure::hasGatewayIP() {
-    if(!(EEPROM.read(GATEWAYIP) > 0) || isnan(EEPROM.read(GATEWAYIP))){
+    if((EEPROM.read(GATEWAYIP) > 0) || isnan(EEPROM.read(GATEWAYIP))){
         return false;
     } else {
         return true;
@@ -212,4 +212,17 @@ byte Configure::hexToByte(char char1, char char2){
     return result;
 }
 
-
+void Configure::abortChild() {
+    EEPROM.update(IDADDRESS, 0);
+    EEPROM.put(GREENADDRESS, (float)0);
+    EEPROM.put(REDADDRESS, (float)0);
+    EEPROM.update(MACBYTE1, 0);
+    EEPROM.update(MACBYTE2, 0);
+    EEPROM.update(MACBYTE3, 0);
+    EEPROM.update(MACBYTE4, 0);
+    EEPROM.update(MACBYTE5, 0);
+    EEPROM.update(MACBYTE6, 0);
+    EEPROM.update(GATEWAYIP, 0);
+    pinMode(6, OUTPUT);
+    digitalWrite(6, HIGH);
+}

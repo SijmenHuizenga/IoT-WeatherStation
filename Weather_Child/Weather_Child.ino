@@ -16,6 +16,8 @@ TimedAction *updateHttpClientTimer = new TimedAction();
 TimedAction *updateHttpServerTimer = new TimedAction();
 
 void setup() {
+  pinMode(6, OUTPUT);
+  digitalWrite(6, LOW);
   startDebugging();
   conf->configureChild();
   sensors->setupSensors();

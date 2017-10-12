@@ -107,10 +107,9 @@ void ChildHttpClient::sendLoginRegisterThings() {
   client.print(":");
   client.println(this->gatewayPort);
   client.println(F("Content-Type: application/json"));
-  client.println(F("Content-Length: 25"));
+  client.println(F("Content-Length: 24"));
   client.println(F("Connection: close \n"));
-
-  client.print(F("{\"ip\":\"")); // 8
+  client.print(F("{\"ip\":\"")); // 7
   client.print(network->getIpAddress(Ethernet.localIP())); //15
   client.print(F("\"}")); //2
 
