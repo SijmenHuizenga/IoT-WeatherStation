@@ -1,11 +1,33 @@
 # IoT-WeatherStation
 A arduino weather station with gateway. University of Applied Science Arnhem en Nijmegen (HAN): Internet of Things (IoT). This branch contains the code for child arduino's. These childs measure environmental data and sent it to the gateway.
 
-## Pre Requirements
-To compile and upload this code the following libraries are required:
- * Ethernet2 
- * SparkFun_Si7021_Breakout_Library
+## Functionalities
 
+
+## Installation
+How to go from an Arduino, an ethernetshield, and a couple of sensors to a weatherboys weatherstation.
+
+### Setup
+First, connect a Ethernet Shield 2 on the Arduion. Than connect the sensors using the following wireing scheme.
+
+![connection scheme](Child_1_bb.png)
+
+### Libraries
+The following libraries are required to compile the program:
+* **SparkFun Si7021 Breakout Library** [***Avalable here***](https://github.com/sparkfun/Si7021_Breakout). This is the library that reads the Si7021 values.
+* **Ethernet2** [***Avalable here***](https://github.com/adafruit/Ethernet2) This library is needed for the ethernet shield 2. This software has only been tested on the ethernet shield 2.
+
+If you are not familiar with installing Arduino Libraries, go [here](https://www.arduino.cc/en/Guide/Libraries) to get started.
+
+### Code [***available here***](https://github.com/SijmenHuizenga/IoT-WeatherStation/tree/child)
+There are two programs that can be used:
+* **ClearArduino** This program makes sure there is no unwanted values in te EEPROM. Upload and run this program first before uplaoding the primary program.
+* **Weather_Child** This is the awesome weatherstation code, it does *Everything*.
+
+### Setup
+To install the weatherstation code on the arduino you first need to run the ClearArduino code. This simple program clears the eeprom from old variables. After that just upload the Weather_Child code. The first time the program is executed on the arduino the serial connection is used to setup some settings. So make sure you have the arduino connected to your computer and a serial port is open. The arduino will guide you through the steps and will ask you to provide some information. This will be self-explanitory. All settings are stored in eeprom so this process should only be executed once.
+
+When everything is configured you can disconnect the serial connection and enjoy your awesome weatherboys weatherstation!
 
 
 ## Program design
@@ -91,42 +113,3 @@ TimedAction* sendWeatherDataTimer = new TimedAction(); <-- Create a timer per ob
 sendWeatherDataTimer->setDelay(5000); <-- set the interval in milliseconds
 sendWeatherDataTimer->setCallback(sendWeatherToGateway); <-- set a funtion to call at the interval.
 ```
-
-# Installation
-How to go from an Arduino, an ethernetshield, and a couple of sensors to a weatherboys weatherstation.
-
-## Prerequisites
-What code and libraries do you need to make an awesome weatherboys weatherstation.
-
-### Code [***available here***](https://github.com/SijmenHuizenga/IoT-WeatherStation/tree/child)
-**ClearArduino**
-
-This program makes sure there is no unwanted values in te EEPROM.
-
-**Weather_Child**
-
-This is the awesome weatherstation code, it does *Everything*.
-
-### Libraries
-**SparkFun Si7021 Breakout Library** [***Avalable here***](https://github.com/sparkfun/Si7021_Breakout)
-
-This is the library that reads the Si7021 values.
-
-**Ethernet2** [***Avalable here***](https://github.com/adafruit/Ethernet2) 
-
-This library is needed for the ethernet shield 2. This code has only been tested on the ethernet shield 2.
-
-## Uploading to the arduino
-
-### Libraries
-The location of the library folder differs per computer. Find your Arduino IDE installation folder and navigate to the folder named libraries.
-
-**Ehternet2** Can be placed directly into your arduinos library folder.
-
-**Si7021** Take the folder from `/Libraries/Arduino/` and place it in the library folder.
-
-### Code
-To install the weatherstation code on the arduino you first need to run the ClearArduino code. 
-
-After that just upload the Weather_Child code and enjoy your awesome weatherboys weatherstation!
-
