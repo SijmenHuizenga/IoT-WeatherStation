@@ -100,12 +100,30 @@ What code and libraries do you need to make an awesome weatherboys weatherstatio
 
 ### Code
 **ClearArduino**
+
 This program makes sure there is no unwanted values in te EEPROM.
 **Weather_Child**
+
 This is the awesome weatherstation code, it does *Everything*.
 
 ### Libraries
 **SparkFun Si7021 Breakout Library** [***Avalable here***](https://github.com/sparkfun/Si7021_Breakout)
+
 This is the library that reads the Si7021 values.
-**Ethernet2** [***Avalable here***](https://github.com/adafruit/Ethernet2)
+
+**Ethernet2** [***Avalable here***](https://github.com/adafruit/Ethernet2) 
+
 This library is needed for the ethernet shield 2. This code has only been tested on the ethernet shield 2.
+
+## Installation
+
+### Libraries
+The location of the library folder differs per computer. Find your Arduino IDE installation folder and navigate to the folder named libraries.
+
+**Ehternet2** Can be placed directly into your arduinos library folder.
+
+**Si7021** Take the folder from `/Libraries/Arduino/` and place it in the library folder.
+
+### Code
+To install the weatherstation code on the arduino you first need to run the ClearArduino code. After that just upload the Weather_Child code and enjoy your awesome weatherboys weatherstation!
+
