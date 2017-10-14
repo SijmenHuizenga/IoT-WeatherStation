@@ -36,10 +36,10 @@ extra's:
 - [ ] Spell check
 
 ideeen voor later:
-* DNS Server
-* Data opnieuw versturen naar Jorg als dat niet lukt
-* Authenticatie tussen Child en Gateway
-* acknowleging receivement of new id
+- DNS Server
+- Data opnieuw versturen naar Jorg als dat niet lukt
+- Authenticatie tussen Child en Gateway
+-  acknowleging receivement of new id
 
 
 
