@@ -1,4 +1,5 @@
 #pragma once
+#define BAUDRATE 9600
 #define DEBUGWEBCLIENT
 //#define DEBUGSENSOR
 //#define DEBUGLED

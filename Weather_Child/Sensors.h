@@ -3,6 +3,7 @@
 #include "SparkFun_Si7021_Breakout_Library.h"
 //#include <Wire.h>
 
+#define LIGHTPIN A0
 #define TEMPCALIBRATION -1
 
 class Sensors {

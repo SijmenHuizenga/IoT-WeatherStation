@@ -5,6 +5,10 @@
 
 #define LEDEEPROMADRESSR 150
 #define LEDEEPROMADRESSG 180
+#define MAXTEMP 100
+#define MINTEMP 0
+#define DEFAULTGREENTHRESH 18
+#define DEFAULTREDTHRESH 23
 
 Led* led = new Led();
 
@@ -19,10 +23,10 @@ void Led::setupLed() {
   EEPROM.get(LEDEEPROMADRESSR, this->treshRed);
   EEPROM.get(LEDEEPROMADRESSG, this->treshGreen);
 
-  if(this->treshRed < 0 || this->treshRed > 100 || this->treshGreen < 0 || this->treshGreen > 100 || this->treshRed <= this->treshGreen || isnan(this->treshGreen) || isnan(this->treshRed)){
+  if(this->treshRed < MINTEMP || this->treshRed > MAXTEMP || this->treshGreen < MINTEMP || this->treshGreen > MAXTEMP || this->treshRed <= this->treshGreen || isnan(this->treshGreen) || isnan(this->treshRed)){
     debugln(F("Read tresholds from eeprom. Values are invalid. Setting to default"), LED);
-    this->setTreshGreen(18);
-    this->setTreshRed(23);
+    this->setTreshGreen(DEFAULTGREENTHRESH);
+    this->setTreshRed(DEFAULTREDTHRESH);
   }else{
     debug(F("Read tresholds from eeprom. Values are "), LED);
     bebug(this->getTreshGreen(), LED);

@@ -6,7 +6,10 @@
 #include "Json.h"
 #include "Ram.h"
 
-EthernetServer server(80);
+
+
+
+EthernetServer server(CHILDSERVERPORT);
 
 ChildHttpServer* httpServer = new ChildHttpServer();
 

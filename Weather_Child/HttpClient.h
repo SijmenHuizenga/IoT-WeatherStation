@@ -11,13 +11,14 @@
 #define SENDHUMID
 #define SENDBRIGHTNESS
 
+#define SERVERPORT 80
+
 enum NetClientStatus { NET_CONNETING, NET_RECEIVING, NET_WAITING };
 enum NetRequestType {REGISTER, LOGIN, SENDDATA};
 
 
 class ChildHttpClient {
   private:
-    int gatewayPort = 80;
     EthernetClient client;    
     int childID = -1;
     unsigned long serverTime = 0;

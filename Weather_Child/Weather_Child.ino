@@ -9,6 +9,7 @@
 #include "configure.h"
 
 #define ETHERNETSHIELDv2
+#define RESETPIN 6
 
 TimedAction *sendWeatherDataTimer = new TimedAction();
 TimedAction *updateLedsTimer = new TimedAction();
@@ -16,8 +17,8 @@ TimedAction *updateHttpClientTimer = new TimedAction();
 TimedAction *updateHttpServerTimer = new TimedAction();
 
 void setup() {
-  pinMode(6, OUTPUT);
-  digitalWrite(6, LOW);
+  pinMode(RESETPIN, OUTPUT);
+  digitalWrite(RESETPIN, LOW);
   startDebugging();
   conf->configureChild();
   sensors->setupSensors();

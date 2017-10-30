@@ -2,6 +2,8 @@
 #include "Debug.h"
 #include "Network.h"
 
+#define CHILDSERVERPORT 80
+
 enum HttpServerRequestType {PING, GETSETTINGS, PUTSETTINGS, UNKOWN};
 
 class ChildHttpServer {

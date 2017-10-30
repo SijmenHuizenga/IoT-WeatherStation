@@ -8,6 +8,8 @@
 #include <EEPROM.h>
 #include <Arduino.h>
 
+#define HTTP_OK 200
+
 ChildHttpClient* httpClient = new ChildHttpClient();
 
 void ChildHttpClient::updateHttpClient() {
@@ -26,7 +28,7 @@ void ChildHttpClient::sendWeatherToGateway(void) {
 }
 
 void ChildHttpClient::clientConnectAndSend() {
-  if (this->client.connect(network->gatewayIp, this->gatewayPort)) {
+  if (this->client.connect(network->gatewayIp, SERVERPORT)) {
     switch (this->requesttypestate) {
       case REGISTER:
         this->sendRegister();
@@ -45,7 +47,7 @@ void ChildHttpClient::clientConnectAndSend() {
 }
 
 void ChildHttpClient::sendWeather() {
-  this->sendWeatherHeader(80);
+  this->sendWeatherHeader(SERVERPORT);
 
   client.print(F("{\"humidity\":")); //11
   printFloatTo5CharString(client, sensors->getHumidity()); //5
@@ -64,7 +66,10 @@ void ChildHttpClient::sendWeatherHeader(unsigned int bodyLength) {
   client.print(F("PUT /child/"));
   client.print(this->childID);
   client.println(F("/measurements HTTP/1.1"));
-  client.println(F("Host: 192.168.178.55:8080")); // to-do dynamisch maken
+  client.print(F("Host: 192.168.178."));
+  client.print(conf->ip);
+  client.print(":");
+  client.println(SERVERPORT);
   client.println(F("Content-Type: application/json"));
   client.print(F("Content-Length: "));
   client.println(bodyLength);
@@ -74,8 +79,8 @@ void ChildHttpClient::sendWeatherHeader(unsigned int bodyLength) {
 
 void ChildHttpClient::loginToGateway() {
   debugln(network->gatewayIp, WEBCLIENT);
-  int eepromid = EEPROM.read(0);
-  if (eepromid > 0) {
+  int eepromid = EEPROM.read(IDADDRESS);
+  if (eepromid > IDADDRESS) {
     debugln("eepromid =" + (String) eepromid, WEBCLIENT);
     this->childID = eepromid;
     this->requesttypestate = LOGIN;
@@ -100,17 +105,16 @@ void ChildHttpClient::sendRegister() {
 }
 
 void ChildHttpClient::sendLoginRegisterThings() {
-  debug(freeRam(), WEBCLIENT);
 
   client.print(F("Host: 192.168.178."));
   client.print(conf->ip);
   client.print(":");
-  client.println(this->gatewayPort);
+  client.println(SERVERPORT);
   client.println(F("Content-Type: application/json"));
   client.println(F("Content-Length: 24"));
   client.println(F("Connection: close \n"));
   client.print(F("{\"ip\":\"")); // 7
-  client.print(network->getIpAddress(Ethernet.localIP())); //15
+  client.print(network->getIpAddress(Ethernet.localIP()));
   client.print(F("\"}")); //2
 
   debugln("sent login/register things", WEBCLIENT);
@@ -178,7 +182,7 @@ void ChildHttpClient::handleBodyPart(char *lineBuffer) {
 }
 
 void ChildHttpClient::readRegisterResponseLine(char *lineBuffer) {
-  if (this->responseStatusCode != 200) {
+  if (this->responseStatusCode != HTTP_OK) {
     this->logAndRetry(lineBuffer);
     return;
   }
@@ -186,8 +190,8 @@ void ChildHttpClient::readRegisterResponseLine(char *lineBuffer) {
   if (lineBuffer[0] == '{') {
     byte id = jsonController->readIdFromJson(lineBuffer);
     debugln(id, WEBCLIENT);
-    if (id > 0) {
-      EEPROM.write(0, id);
+    if (id > IDADDRESS) {
+      EEPROM.write(IDADDRESS, id);
       this->childID = id;
       debug(F("ONTVANGEN ID:"), WEBCLIENT);
       bebugln(id, WEBCLIENT);
@@ -204,7 +208,7 @@ void ChildHttpClient::readRegisterResponseLine(char *lineBuffer) {
 }
 
 void ChildHttpClient::readLoginResponseLine(char *lineBuffer) {
-  if (this->responseStatusCode != 200) {
+  if (this->responseStatusCode != HTTP_OK) {
     this->logAndRetry(lineBuffer);
     return;
   }
@@ -233,7 +237,7 @@ void ChildHttpClient::handleTimePartOfLoginRegisterResponse(char* lineBuffer) {
 }
 
 void ChildHttpClient::readWeatherResponseLine(char *lineBuffer) {
-  if (this->responseStatusCode != 200)
+  if (this->responseStatusCode != HTTP_OK)
     debugln(lineBuffer, WEBCLIENT);
 }
 
@@ -242,7 +246,7 @@ unsigned long ChildHttpClient::getTime() {
 }
 
 void ChildHttpClient::resetChildID() {
-  EEPROM.write(0, 0);
+  EEPROM.write(IDADDRESS, 0);
   debugln(F("Child ID has been reset, requesting new."), WEBCLIENT);
   client.stop();
   this->clientstate = NET_CONNETING;

@@ -25,7 +25,7 @@ float Sensors::getTemperature(void) {
 
 
 float Sensors::getBrightness(void) {
-  float data = analogRead(A0);
+  float data = analogRead(LIGHTPIN);
   debugln(data, SENSOR);
   return data;
 }

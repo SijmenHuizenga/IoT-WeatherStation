@@ -13,7 +13,7 @@ void Button::readButton() {
   if (reading != this->lastButtonState) {
     this->lastDebounceTime = millis();
   }
-  if ((millis() - this->lastDebounceTime) > this->debounceDelay) {
+  if ((millis() - this->lastDebounceTime) > this->DEBOUNCETIME) {
     if (reading != buttonState) {
       this->buttonState = reading;
       if (buttonState == LOW) {
@@ -26,7 +26,7 @@ void Button::readButton() {
       }
     }
   }
-    if((millis() - this->lastDebounceTime) > 5000 && pressed) {
+    if((millis() - this->lastDebounceTime) > LONGPRESS && pressed) {
         pressed = false;
         buttonActionLong();
 

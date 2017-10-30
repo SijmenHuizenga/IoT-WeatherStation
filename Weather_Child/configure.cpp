@@ -73,7 +73,7 @@ bool Configure::hasMac() {
 }
 
 bool Configure::hasGatewayIP() {
-    if((EEPROM.read(GATEWAYIP) > 0) || isnan(EEPROM.read(GATEWAYIP))){
+    if((EEPROM.read(GATEWAYIP) == 0) || isnan(EEPROM.read(GATEWAYIP))){
         return false;
     } else {
         return true;
