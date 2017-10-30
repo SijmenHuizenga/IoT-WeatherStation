@@ -39,6 +39,28 @@ When everything is configured you can disconnect the serial connection and enjoy
 ### Wether_child.ino
 This is the main program, this is where al the timers run and the order of functions is managed.
 
+### Button.h / cpp
+
+This is where all the button configuration is done.
+
+To change the button pin change line 1 in the `Button.h`.
+
+`#define BUTTONPIN 5` change the 5 to any other unused pin.
+
+To change the long press time change line 6 in the `Button.h`.
+
+`  int longPress = 5000;` change 5000 to whatever value you desire. The delay is in milliseconds, so if you want 3 seconds change it to 3000.
+
+There are 4 public functions:
+
+`void setupButton();` <-- set the buttonpin to input with pullup.
+
+`void readButton();` <-- when called reads the currend debounced state of the button.
+
+`void buttonActionLong();` <-- this code gets executed when te button is pressed for longer than the longpress time. (currently resets the whole child)
+
+`void buttonActionShort();` <-- this code runs when the button is pressed for shorter then the longpress time. (currently resets the child id)
+
 ### Debug.h / cpp
 
 In this file all the debugging is managed. Debugging writes the output to serial.
@@ -50,6 +72,8 @@ Example:
 `//#define DEBUGNETWORK` <-- network debugging disabled.
 
 `#define DEBUGSENSOR` <-- sensor debugging enabled.
+
+If no debugging tag is defined serial won't start.
 
 #### How to use debugging
 There are three debugging functions:
@@ -69,10 +93,58 @@ debugln(i, WEBCLIENT);
 ```
 Output: `[NET] 3`
 
+### Add custom debugging
+
+To add a debugging tag add the following code in `Debug.h` in the switch statement.
+
+```
+#ifdef "YOURDEBUGTAG" <-- Your debugtag without quotes
+    case "DEBUGCALL":<-- Your debugcall without quotes
+      if (printprefix)
+        Serial.print(F("[SHORTTAG] ")); <-- Your shorttag without quotes
+      Serial.print(message);
+      if (printnl)
+        Serial.println();
+      break;
+#endif
+```
+Add your "DEBUGCALL" to the DebugType enum.
+
+```
+typedef enum DebugType {
+  SENSOR, WEBCLIENT, LED, WEBSERVER, CONF, "DEBUGCALL" <-- Your debugcall without quotes
+} DebugType;
+```
+
+Now to use it define your debugtag on the top in the `Debug.h` and use `debug("your message", DEBUGCALL);`.
+This will print: `[SHORTTAG] your message`.
+
 ### HttpClient.h / cpp
 Sends measured data, registers the child and logs in the child.
 
+To change the gateway port change line 14 in `HttpClient.h`
+
+`#define SERVERPORT 80` change 80 to whichever port the gateway is running on.
+
 `updateHttpClient()` <-- manages which data to send to the gateway or wheater to listen for an answer.
+
+### HttpServer.h / cpp
+
+The HttpServer allows the gateway to change the settings on the child. 
+
+To change the port on which the server wil run change line 5 in `HttpServer.h`
+
+`#define CHILDSERVERPORT 80` change the 80 to whichever port you want the server to run on.
+
+The most important functions are  
+
+`void startHttpServer();` <-- starts the http server on the seleced port.
+
+`void updateHttpServer();` <-- manages the incoming requests
+
+### Json.h / cpp
+
+The code in these files is used to filter Json from the html body and returns the found values
 
 ### Led.h / cpp
 Manages the 3 leds for displaying the temperature in comparisont to the threshholds.
@@ -87,14 +159,11 @@ Define the 3 leds using the following code:
 ```
 
 ### Network.h / cpp
-enables the arduino to send data using the ethernet shield.
-
-To enable using the programmed MAC adress of the ethernet shield, you need to add the following line to the top of the file `Ethernet2.h` in the `libraries/Ethernet2/src` directory on your computer:
-`#define WIZ550io_WITH_MACADDRESS`
+Enables the arduino to send data using the ethernet shield.
 
 how to use:
 
-connectEthernet() <-- connects to the ethernet using DHCP so no IP or MAC configuration is needed.
+connectNetwork() <-- connects to the ethernet using DHCP so no IP is needed, it uses the MAC received in the configuration.
  
 ### Sensors.h / cpp
 Used to setup and read values from the sensors.
@@ -117,3 +186,15 @@ TimedAction* sendWeatherDataTimer = new TimedAction(); <-- Create a timer per ob
 sendWeatherDataTimer->setDelay(5000); <-- set the interval in milliseconds
 sendWeatherDataTimer->setCallback(sendWeatherToGateway); <-- set a funtion to call at the interval.
 ```
+
+### Configure.h / cpp
+
+This code allows the user to upload the same code to all weatherstations and configure the needed values via the Serial monitor.
+In order to know which variables to ask the user the code first checks if they are already in the EEPROM.
+
+The most important funcitons are:
+
+`void configureChild();` <-- checks is the child has already been configured, if not, starts the configuration via serial.
+
+`void abortChild();` <-- sets every used eeprom address to `0` and sets pin 6 to `HIGH` so the transistor resets the arduino.
+
