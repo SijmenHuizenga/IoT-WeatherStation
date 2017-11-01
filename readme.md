@@ -1,11 +1,12 @@
 [![docker badge](https://img.shields.io/badge/docker%20image-available-brightgreen.svg)](https://hub.docker.com/r/sijmenhuizenga/iotweathergateway)
 [![traivs badge](https://img.shields.io/travis/SijmenHuizenga/IoT-WeatherStation/gateway.svg)](https://travis-ci.org/SijmenHuizenga/IoT-WeatherStation)
+[Gateway Decisions](decisions.md)
 
 # Weather System Gateway
 This gateway is the central link in the weahter network. Measurements from children are stored in this gateawy and the data is forwarded to the jorgapi. This gateway als has a dashboard to display measurements and control children settings.
 
 ## Running the Gateway
-Pre-requirement: a running empty mysql database and corresponding username and password. Read [this tutorial]() or use the following docker-compose.yaml configuration to run on raspberry pi with docker:
+Pre-requirement: a running empty mysql database and corresponding username and password. Read [this tutorial](https://dev.mysql.com/doc/mysql-getting-started) or use the following docker-compose.yaml configuration to run on raspberry pi with docker:
 
 ```
 version: '3'
@@ -77,7 +78,7 @@ Last step is to run `docker-compose up` to start the gateway application and dat
 Now the gateway dashboard is available on port 80 and children can start sending data to it. To get the forwarding of data to the jorg api to work you need to visit te dashboard in your browser and configure the url, username and password for the jorgapi.
 
 
-##Developing
+## Developing
 This application is a developed in Java using the [Spring Boot](https://projects.spring.io/spring-boot/) platform. The project is built and packaged using [Maven](https://maven.apache.org/). 
 
 The dashboard webapp uses React together with some other external javascript and css resources. The decision is made to keep this webapp simple. The webapp source code does not need to be compiled to work. It uses a standalone version of Babel and a development version of React. The decision for this can be read [here](decisions.md).
