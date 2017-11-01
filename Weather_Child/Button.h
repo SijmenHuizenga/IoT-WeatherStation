@@ -1,7 +1,8 @@
+
+#include <Arduino.h>
 #define BUTTONPIN 5
 #define LONGPRESS 5000
 #define DEBOUNCETIME 50
-#include <Arduino.h>
 class Button {
   private:
     bool pressed;

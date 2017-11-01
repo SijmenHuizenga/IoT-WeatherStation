@@ -13,7 +13,7 @@ void Button::readButton() {
   if (reading != this->lastButtonState) {
     this->lastDebounceTime = millis();
   }
-  if ((millis() - this->lastDebounceTime) > this->DEBOUNCETIME) {
+  if ((millis() - this->lastDebounceTime) > DEBOUNCETIME) {
     if (reading != buttonState) {
       this->buttonState = reading;
       if (buttonState == LOW) {
