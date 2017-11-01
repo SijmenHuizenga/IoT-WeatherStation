@@ -14,7 +14,7 @@ How to go from an Arduino, an ethernetshield, and a couple of sensors to a weath
 ### Phisical setup
 First, connect a Ethernet Shield 2 on the Arduion. Than connect the sensors using the following wireing scheme.
 
-![connection scheme](Child_1_bb.png)
+![connection scheme](Child_1_bb_.png)
 
 ### Libraries
 The following libraries are required to compile the program:
