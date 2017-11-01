@@ -12,7 +12,9 @@ The child has a single button that resets the child. With a short press only the
 How to go from an Arduino, an ethernetshield, and a couple of sensors to a weatherboys weatherstation.
 
 ## Unit Tests
-There are unit tests available for the http server on the child. These unit tests are built on the [postman platform](https://www.getpostman.com/) and can be found [here](Child%20Tests.postman_collection.json). Read [this tutorial](https://www.getpostman.com/docs/postman/collections/data_formats) on how to import the collection into your postman instance.
+There are unit tests available for the http server on the child. These unit tests are built on the [postman platform](https://www.getpostman.com/) and can be found [here](Child%20Tests.postman_collection.json). Read [this tutorial](https://www.getpostman.com/docs/postman/collections/data_formats) on how to import the collection into your postman instance. After importing the scripts it can be found under collections on the left hand side.
+To run the tests you first need to create an environment. This can be done by clicking the gogwheel in the top right conrner, then click manage environments, click Add, Name the environment whatever you like and add a key `childip` with the childs IP. Finalise the environment by kicking add and closing the manage environment window.
+
 
 ### Phisical setup
 First, connect a Ethernet Shield 2 on the Arduion. Than connect the sensors using the following wireing scheme.
