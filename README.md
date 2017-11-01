@@ -1,5 +1,5 @@
 # IoT-WeatherStation
-A arduino weather station with gateway. University of Applied Science Arnhem en Nijmegen (HAN): Internet of Things (IoT). This branch contains the code for child arduino's. These childs measure environmental data and sent it to the gateway.
+An arduino weather station with gateway. University of Applied Science Arnhem en Nijmegen (HAN): Internet of Things (IoT). This branch contains the code for child arduino's. These childs measure environmental data and sent it to the gateway.
 
 ## Functionalities
 The child has many fancy functionalities. Its primary objective is to measure environmental data (temperature, humidity and brightness) and send it to the [gateway](https://github.com/SijmenHuizenga/IoT-WeatherStation/tree/gateway). 
