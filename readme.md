@@ -3,7 +3,7 @@
 [Gateway Decisions](decisions.md)
 
 # Weather System Gateway
-This gateway is the central link in the weahter network. Measurements from children are stored in this gateawy and the data is forwarded to the jorgapi. This gateway als has a dashboard to display measurements and control children settings.
+This gateway is the central link in the weahter network. Measurements from children are stored in this gateway and the data is forwarded to the jorgapi. This gateway als has a dashboard to display measurements and control children settings.
 
 ## Running the Gateway
 Pre-requirement: a running empty mysql database and corresponding username and password. Read [this tutorial](https://dev.mysql.com/doc/mysql-getting-started) or use the following docker-compose.yaml configuration to run on raspberry pi with docker:
