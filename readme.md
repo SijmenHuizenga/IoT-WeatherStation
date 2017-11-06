@@ -88,3 +88,6 @@ The dashboard webapp uses React together with some other external javascript and
 2. Run `mvn package` to build the runnable .jar
 3. Run `docker build -t sijmenhuizenga/iotweathergateway .` to build the docker image for normal computers
 3a. Run `docker build -t sijmenhuizenga/iotweathergateway:rpi -f Dockerfile-rpi .`
+
+## Testing
+Fully featured integration api testing are found in [FullWalkthroughTest.java](/src/test/java/nl/han/weatherboys/controller/FullWalkthroughTest.java). This registers a child, adds measurement data and performs the data retreival rest calls.  
